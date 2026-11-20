@@ -12,21 +12,11 @@
 2. iPhone/iPad：分享 →「添加到主屏幕」；Mac：文件 →「添加到程序坞」。
 3. 从图标打开一次，之后飞行模式也能玩单机。
 
-## 部署联机服务器（一次性，约 10 分钟）
-1. 浏览器打开（把用户名和仓库名换成你的）：
-   `https://deploy.workers.cloudflare.com/?url=https://github.com/你的用户名/你的仓库名/tree/main/worker`
-2. 注册 / 登录 Cloudflare（免费），按提示连接 GitHub，点 **Deploy**。
-   Cloudflare 会在你的 GitHub 里复制一个新仓库并自动部署。
-3. 部署完成后会得到一个地址，形如 `guandan-relay.xxxx.workers.dev`。
-4. 打开游戏 → 选「线上：创建房间」→ 服务器一栏填这个地址 → 创建房间 → 复制链接发给朋友。
-
-备用方法（按钮不好用时，在 Mac 终端里）：
-```
-cd worker
-npx wrangler login
-npx wrangler deploy
-```
-（需要先装 Node.js：https://nodejs.org）
+## 联机服务器（Cloudflare）
+仓库根目录的 `wrangler.toml` 告诉 Cloudflare：同一个地址既提供游戏网页，也运行 `worker/` 里的联机中转。
+- Cloudflare 后台把这个仓库连接到名为 `guandan` 的 Worker 后，每次往仓库上传新文件都会自动重新部署。
+- 检查是否正常：浏览器打开 `https://你的地址/relay`，应显示 `guandan relay ok`。
+- 游戏里「设置 → 联机服务器 → 测试」也能检查。
 
 ## 国内玩家
-`workers.dev` 在国内常被屏蔽：国内玩家开 VPN（建议全局模式）即可。以后想免 VPN，可以给 Worker 绑定自己的域名，游戏里把服务器地址换成新域名就行。
+`workers.dev` 在国内常被屏蔽：国内玩家开 VPN（建议全局模式）即可。以后想免 VPN，可以给 Worker 绑定自己的域名。

@@ -93,7 +93,12 @@ html,body{margin:0;height:100%;overflow:hidden;background:#06261a;font:15px/1.4 
 .card .tl{position:absolute;top:2px;left:3px;text-align:center;font-weight:800;line-height:.95;font-size:calc(var(--cw)*.36);letter-spacing:-1px}
 .card .tl i{display:block;font-style:normal;font-size:calc(var(--cw)*.3);letter-spacing:0}
 .card .big{position:absolute;right:4px;bottom:2px;font-size:calc(var(--cw)*.5)}
-.card.jk .tl{font-size:calc(var(--cw)*.24);writing-mode:vertical-rl;letter-spacing:0;line-height:1}
+.card.jk .tl{font-size:calc(var(--cw)*.22);writing-mode:vertical-rl;letter-spacing:0;line-height:1}
+.card.h .tl{font-size:calc(var(--cw)*.33);line-height:1;white-space:nowrap;letter-spacing:-1px}
+.card.h .tl i{display:inline;font-size:calc(var(--cw)*.3);margin-left:1px}
+.info.ed{cursor:pointer}.info.ed .nm::after{content:" ✎";font-size:10px;opacity:.6}
+.stat{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:8px 0;font-size:15px}.stat b{font-weight:600;color:#6b6352}
+#hand{-webkit-touch-callout:none}
 .card.jk .big{font-size:calc(var(--cw)*.42)}
 .card.lvl{background:#fff4cf}
 .card.wild::after{content:"配";position:absolute;right:2px;top:2px;font-size:calc(var(--cw)*.22);background:var(--red);color:#fff;border-radius:4px;padding:0 2px;font-weight:700}
@@ -129,14 +134,14 @@ html,body{margin:0;height:100%;overflow:hidden;background:#06261a;font:15px/1.4 
 <body>
 <div id="app">
   <div id="bar">
-    <div class="lv">我方<b id="lv0">2</b></div>
-    <div class="lv">对方<b class="them" id="lv1">2</b></div>
-    <div class="lv">本局打<b class="cur" id="lvc">2</b></div><div class="lv" id="dfl" style="opacity:.8"></div>
+    <div class="lv"><span data-t="us">我方</span><b id="lv0">2</b></div>
+    <div class="lv"><span data-t="them">对方</span><b class="them" id="lv1">2</b></div>
+    <div class="lv"><span data-t="playing">本局打</span><b class="cur" id="lvc">2</b></div><div class="lv" id="dfl" style="opacity:.8"></div>
     <button id="net"></button>
     <div class="sp"></div>
-    <button class="tb" id="bTrack">记牌器</button>
-    <button class="tb" id="bSet">设置</button>
-    <button class="tb" id="bHelp">规则</button>
+    <button class="tb" id="bTrack" data-t="tracker">记牌器</button>
+    <button class="tb" id="bSet" data-t="settings">设置</button>
+    <button class="tb" id="bHelp" data-t="rules">规则</button>
   </div>
   <div id="table">
     <div id="tracker"></div>
@@ -149,14 +154,14 @@ html,body{margin:0;height:100%;overflow:hidden;background:#06261a;font:15px/1.4 
   </div>
   <div id="ctrl">
     <div class="grp">
-      <button class="bt sm" id="bSmart" title="按最优拆牌把顺子、同花顺、炸弹等分好列">智能理牌</button>
-      <button class="bt sm" id="bSF" title="依次选出手里能组成的同花顺">同花顺</button>
-      <button class="bt sm" id="bGroup" title="把选中的牌放成一列">理牌</button>
-      <button class="bt sm" id="bReset" title="恢复按点数排列">还原</button>
+      <button class="bt sm" id="bSmart" data-t="smart" data-tt="smartTip">智能理牌</button>
+      <button class="bt sm" id="bSF" data-t="sfBtn" data-tt="sfTip">同花顺</button>
+      <button class="bt sm" id="bGroup" data-t="group" data-tt="groupTip">理牌</button>
+      <button class="bt sm" id="bReset" data-t="reset" data-tt="resetTip">还原</button>
     </div>
     <div class="grp">
-      <button class="bt pa" id="bPass">不出</button>
-      <button class="bt" id="bHint">提示</button>
+      <button class="bt pa" id="bPass" data-t="pass">不出</button>
+      <button class="bt" id="bHint" data-t="hint">提示</button>
       <button class="bt main" id="bPlay">出牌</button>
     </div>
   </div>
@@ -739,22 +744,129 @@ function mcDecide(S, p, budgetMs, now) {
 }
 if (typeof module !== 'undefined') Object.assign(module.exports, {mcDecide, sampleWorld, playout});
 
+// ---------- 中英文 ----------
+const L10N = {
+  zh: {
+    us: '我方', them: '对方', playing: '本局打', tracker: '记牌器', settings: '设置', rules: '规则',
+    smart: '智能理牌', smartTip: '按最优拆牌把顺子、同花顺、炸弹等分好列', sfBtn: '同花顺', sfTip: '依次选出手里能组成的同花顺',
+    group: '理牌', groupTip: '把选中的牌放成一列', reset: '还原', resetTip: '恢复按点数排列，并取消选中', pass: '不出', hint: '提示', play: '出牌', ret: '还贡',
+    rel: ['我', '下家', '对家', '上家'], ranks: ['头游', '二游', '三游', '末游'],
+    diff: {normal: '普通', hard: '困难', master: '大师'}, speed: {fast: '快', mid: '中', slow: '慢', slower: '很慢'},
+    types: {single: '单张', pair: '对子', triple: '三张', fh: '三带二', straight: '顺子', tube: '三连对', plate: '钢板', bomb: '炸弹', sf: '同花顺', kings: '天王炸'},
+    sj: '小王', bj: '大王', trSj: '小', trBj: '大',
+    cpu: '电脑：', cards: n => `${n} 张`, thinking: '思考中…', left: n => `剩余 ${n} 张`, seat: n => `座位${n}`,
+    bot: 'Bot', offBot: '掉线·电脑代打',
+    lRound: (r, L) => `第 ${r} 局 · 打 ${L} · 红桃${L}是配牌`, lAnti: names => `${names} 有两张大王，抗贡！`,
+    lGive: (a, c, b) => `${a} 进贡 ${c} 给 ${b}`, lRet: (a, c, b) => `${a} 还贡 ${c} 给 ${b}`, lWaitRet: a => `等待 ${a} 还贡…`, lFirst: a => `${a} 先出`,
+    pickRet: '请选一张 10 或以下的牌还贡', pickRet2: '请选一张 10 或以下的牌', noBeat: '要不起',
+    fxKings: '天王炸！', fxSF: '同花顺！', fxBomb: '炸弹！', fxOut: (a, r) => `${a} ${r}！`, fxOutR: (a, i) => `${a} ${['头游', '二游', '三游', '末游'][i]}！`, fxEnd: '本局结束，亮牌',
+    winAll: '🎉 我方打过 A，赢得整场！', loseAll: '对方打过 A，赢得整场', winR: '本局我方获胜', loseR: '本局对方获胜',
+    usTag: '（我方）', themTag: '（对方）', upTo: (side, up, L) => `${side}升 ${up} 级 → 下局打 <b>${L}</b>`, lvNow: (a, b) => `级数：我方 ${a} · 对方 ${b}`,
+    waitNext: '等待房主开始下一局…', waitNew: '等待房主开始新的一场…', next: '下一局', again: '再来一场',
+    selFirst: '请先选牌', badType: '牌型不对', cantBeat: '管不上', noHint: '没有能管上的牌', mustPlay: '必须出牌', notInHand: '牌不在手里',
+    sorted: n => `已按最优拆法整理：约 ${n} 手牌`, noSF: '手里组不成同花顺', sfPick: (i, n, m) => `同花顺 ${i}/${n}${m ? `（用 ${m} 张配）` : ''}，点「理牌」放成一列`,
+    groupFirst: '先选几张牌，再点理牌', resetDone: '已还原，并取消所有选中',
+    online: '线上', connected: '已连接', reconnecting: '重连中…', elsewhere: '已在别处打开', notHost: '房主身份校验失败', badAddr: '地址无效', cantConn: '连不上',
+    hostGone: '房主掉线，等待…', hostGoneT: '房主连接中断，等他回来',
+    srvOk: '服务器正常', srvNotRelay: '这个地址不是联机服务器（可能部署的只是网页，没有中转程序）', srvFail: '打不开服务器：地址不对，或被网络屏蔽（国内请开 VPN 全局模式）',
+    room: r => `线上房间 ${r}`, srvConnected: '已连接服务器', srvConnecting: '正在连接服务器…', srvCant: '连不上服务器', teams: '座位1和3一队，2和4一队',
+    copy: '复制链接', copied: '链接已复制', yourName: '你的名字', namePh: '起个名字', table: '牌桌', emptyTap: '空位，点击入座', empty: '空位',
+    hostTag: '房主', offline: '离线', you: '你',
+    tipSwap2: '再点一个座位：和他换位置', tipSwap: '点一个人，再点另一个座位，就能给他换座位', tipFull: '这局已经开始了，座位已满', tipSit: '点一个空位入座', tipWait: '等待房主开始游戏',
+    unseated: '还没入座的人', unseatedHost: '还没入座的人（点名字再点座位，可以帮他入座）', leaveSolo: '离开，玩单机', start: '开始游戏', botFill: '不足 4 人时，空位由电脑补上。',
+    player: '玩家', hostDefault: '房主', computer: '电脑',
+    hostNote: '你是房主：牌局在你的设备上运行，请保持页面打开、屏幕常亮。', guestNote: '房主的设备负责运行牌局；掉线后会自动重连。', leaveRoom: '退出房间', ok: '好',
+    title: '离线掼蛋', howPlay: '选择怎么玩', solo: '单机（不用网络）', onlineBtn: '线上：创建房间，发链接给朋友', onlineGh: '线上模式请用 GitHub 上的版本打开。',
+    server: '服务器', needSrv: '第一次用线上模式，需要填你部署好的 Cloudflare 服务器地址。', fillSrv: '请先填服务器地址',
+    setCpuHost: '电脑难度和出牌速度由房主设置。', setDiff: '电脑难度', setDiffNote: '困难 / 大师：每步先模拟推演几百种可能的牌局再出牌，每步约 1 秒 / 2 秒。',
+    setSpeed: '出牌速度', setAuto: '要不起时自动跳过', setSort: '每局发牌后自动智能理牌', setSrv: '联机服务器', test: '测试', setLang: '语言 Language',
+    modeBtn: '单机 / 线上', restart: '重新开始整场', restartQ: '重新开始？', restartNote: '两边级数都回到 2。', cancel: '取消',
+    names: '电脑玩家改名', namesNote: '改名随时生效。清空就恢复默认名字。', save: '保存', rename: n => `给「${n}」改名`,
+    stats: '游戏统计', stRounds: '累计游戏局数', stTime: '累计游戏时间', stMonth: '本月游戏时间', stPeople: '线上一起玩过的人数',
+    stNote: '只在打牌时计时（页面在前台）。统计保存在这台设备的这个浏览器里，不能清零。', hm: (h, m) => `${h} 小时 ${m} 分钟`,
+    helpHtml: `<h2>规则与操作</h2>
+<p><b>牌型</b>：单张、对子、三张、三带二、顺子（5张）、三连对、钢板（两个连续三张）。同牌型比大小。</p>
+<p><b>炸弹</b>从小到大：4张 &lt; 5张 &lt; 同花顺 &lt; 6张 &lt; 7张 &lt; 8张… &lt; 天王炸（4张王）。</p>
+<p><b>级牌</b>：本局打几，几就是仅次于王的大牌；<b>红桃级牌是配牌</b>（标“配”），可以当任何非王牌用。</p>
+<p><b>升级</b>：头游一方升级——对家二游升3级，三游升2级，末游升1级。打 A 时须头游且对家不是末游才算赢。</p>
+<p><b>进贡</b>：末游把最大的牌（不含红桃配）进贡给头游，头游还一张10或以下的牌；双下时两人都进贡。进贡方手里有两张大王可以抗贡。</p>
+<p><b>操作</b>：点牌选中，手指滑过可连选，<b>按住</b>或<b>双击</b>一张牌选中整列。「同花顺」依次帮你挑出能组的同花顺，再点「理牌」放成一列；「智能理牌」按电脑的最优拆法自动分好列；「还原」恢复按点数排列并取消选中。</p>
+<p><b>改名</b>：点牌桌上电脑玩家的名字，可以随时给它改名。</p>
+<p><b>线上</b>：设置里选「单机 / 线上」创建房间，把链接发给朋友。房主可以给大家换座位，点开始后空位由电脑补上。</p>
+<p>电脑键盘：回车出牌，空格不出，H 提示，S 智能理牌。</p>`,
+  },
+  en: {
+    us: 'Us', them: 'Them', playing: 'Level', tracker: 'Counter', settings: 'Settings', rules: 'Rules',
+    smart: 'Smart sort', smartTip: 'Group straights, bombs etc. using the best split', sfBtn: 'Str. flush', sfTip: 'Pick the straight flushes you can make, one by one',
+    group: 'Group', groupTip: 'Put selected cards into one column', reset: 'Reset', resetTip: 'Back to sort by rank and clear selection', pass: 'Pass', hint: 'Hint', play: 'Play', ret: 'Return',
+    rel: ['Me', 'Right', 'Partner', 'Left'], ranks: ['1st', '2nd', '3rd', '4th'],
+    diff: {normal: 'Normal', hard: 'Hard', master: 'Master'}, speed: {fast: 'Fast', mid: 'Medium', slow: 'Slow', slower: 'Very slow'},
+    types: {single: 'Single', pair: 'Pair', triple: 'Triple', fh: 'Full house', straight: 'Straight', tube: 'Tube', plate: 'Plate', bomb: 'Bomb', sf: 'Str. flush', kings: '4 Jokers'},
+    sj: 'Small Joker', bj: 'Big Joker', trSj: 'SJ', trBj: 'BJ',
+    cpu: 'CPU: ', cards: n => `${n} cards`, thinking: 'Thinking…', left: n => `${n} left`, seat: n => `Seat ${n}`,
+    bot: 'Bot', offBot: 'Offline · CPU plays',
+    lRound: (r, L) => `Round ${r} · Level ${L} · ♥${L} is wild`, lAnti: names => `${names} hold both Big Jokers: no tribute!`,
+    lGive: (a, c, b) => `${a} gives ${c} to ${b}`, lRet: (a, c, b) => `${a} returns ${c} to ${b}`, lWaitRet: a => `Waiting for ${a} to return a card…`, lFirst: a => `${a} leads`,
+    pickRet: 'Pick a card of 10 or lower to return', pickRet2: 'Pick one card of 10 or lower', noBeat: 'Can\'t beat',
+    fxKings: '4 Jokers!', fxSF: 'Straight flush!', fxBomb: 'Bomb!', fxOut: (a, r) => `${a}: ${r}!`, fxOutR: (a, i) => `${a} finished ${['1st', '2nd', '3rd', '4th'][i]}!`, fxEnd: 'Round over: cards shown',
+    winAll: '🎉 We passed A and won the game!', loseAll: 'They passed A and won the game', winR: 'We won this round', loseR: 'They won this round',
+    usTag: ' (us)', themTag: ' (them)', upTo: (side, up, L) => `${side} go up ${up} → next level <b>${L}</b>`, lvNow: (a, b) => `Levels: us ${a} · them ${b}`,
+    waitNext: 'Waiting for the host to start the next round…', waitNew: 'Waiting for the host to start a new game…', next: 'Next round', again: 'New game',
+    selFirst: 'Select cards first', badType: 'Not a valid combo', cantBeat: 'Doesn\'t beat it', noHint: 'Nothing beats it', mustPlay: 'You must play', notInHand: 'Card not in hand',
+    sorted: n => `Sorted by best split: about ${n} plays`, noSF: 'No straight flush possible', sfPick: (i, n, m) => `Straight flush ${i}/${n}${m ? ` (uses ${m} wild)` : ''}; tap Group to make a column`,
+    groupFirst: 'Select some cards, then tap Group', resetDone: 'Reset, selection cleared',
+    online: 'Online', connected: 'connected', reconnecting: 'reconnecting…', elsewhere: 'opened elsewhere', notHost: 'host check failed', badAddr: 'bad address', cantConn: 'can\'t connect',
+    hostGone: 'host offline, waiting…', hostGoneT: 'Host disconnected, waiting for them',
+    srvOk: 'Server OK', srvNotRelay: 'This address is not the game server (maybe only the web page was deployed)', srvFail: 'Can\'t reach the server: wrong address or blocked (in China use a VPN in global mode)',
+    room: r => `Online room ${r}`, srvConnected: 'Connected to server', srvConnecting: 'Connecting to server…', srvCant: 'Can\'t connect', teams: 'Seats 1 & 3 vs 2 & 4',
+    copy: 'Copy link', copied: 'Link copied', yourName: 'Your name', namePh: 'Pick a name', table: 'Table', emptyTap: 'Empty, tap to sit', empty: 'Empty',
+    hostTag: 'Host', offline: 'Offline', you: 'you',
+    tipSwap2: 'Now tap another seat to swap', tipSwap: 'Tap a player, then another seat, to move them', tipFull: 'The game has started; all seats taken', tipSit: 'Tap an empty seat to sit', tipWait: 'Waiting for the host to start',
+    unseated: 'Not seated yet', unseatedHost: 'Not seated yet (tap a name, then a seat, to seat them)', leaveSolo: 'Leave, play solo', start: 'Start game', botFill: 'Empty seats are filled by the computer.',
+    player: 'Player', hostDefault: 'Host', computer: 'CPU',
+    hostNote: 'You are the host: the game runs on your device. Keep this page open and the screen on.', guestNote: 'The host\'s device runs the game. You reconnect automatically if dropped.', leaveRoom: 'Leave room', ok: 'OK',
+    title: 'Guandan', howPlay: 'How do you want to play?', solo: 'Solo (no internet needed)', onlineBtn: 'Online: create a room and share the link', onlineGh: 'For online play, open the GitHub version.',
+    server: 'Server', needSrv: 'First time online: enter your Cloudflare server address.', fillSrv: 'Enter the server address first',
+    setCpuHost: 'CPU level and speed are set by the host.', setDiff: 'CPU level', setDiffNote: 'Hard / Master: simulates hundreds of possible deals before each move, about 1 s / 2 s per move.',
+    setSpeed: 'Play speed', setAuto: 'Auto-pass when I can\'t beat', setSort: 'Smart sort after each deal', setSrv: 'Server', test: 'Test', setLang: '语言 Language',
+    modeBtn: 'Solo / Online', restart: 'Restart game', restartQ: 'Restart?', restartNote: 'Both teams go back to level 2.', cancel: 'Cancel',
+    names: 'Rename CPU players', namesNote: 'Changes apply right away. Leave empty for the default name.', save: 'Save', rename: n => `Rename "${n}"`,
+    stats: 'Stats', stRounds: 'Rounds played', stTime: 'Total play time', stMonth: 'This month', stPeople: 'People played with online',
+    stNote: 'Time counts only while playing with the page in front. Stored in this browser on this device; it can\'t be reset.', hm: (h, m) => `${h} h ${m} min`,
+    helpHtml: `<h2>Rules & controls</h2>
+<p><b>Combos</b>: single, pair, triple, full house (3+2), straight (5 cards), tube (3 consecutive pairs), plate (2 consecutive triples). Same type compares by rank.</p>
+<p><b>Bombs</b>, low to high: 4 of a kind &lt; 5 &lt; straight flush &lt; 6 &lt; 7 &lt; 8… &lt; 4 Jokers.</p>
+<p><b>Level card</b>: the current level rank is the highest card below the Jokers. <b>The heart of the level rank is wild</b> (marked 配) and can stand in for any non-Joker card.</p>
+<p><b>Going up</b>: the team of the 1st finisher goes up 3 if the partner is 2nd, 2 if 3rd, 1 if last. At level A you must finish 1st with your partner not last to win.</p>
+<p><b>Tribute</b>: the last finisher gives their highest card (not the wild heart) to the 1st, who returns a card of 10 or lower. If a team finishes 3rd and 4th, both pay. Holding both Big Jokers cancels the tribute.</p>
+<p><b>Controls</b>: tap to select, slide to select several, <b>press and hold</b> or <b>double-tap</b> to select a column. "Str. flush" picks possible straight flushes; tap "Group" to make a column. "Smart sort" groups your hand; "Reset" sorts by rank and clears selection.</p>
+<p><b>Rename</b>: tap a CPU player's name on the table.</p>
+<p><b>Online</b>: Settings → "Solo / Online" to create a room and share the link. The host can move players; empty seats get CPU players.</p>
+<p>Keyboard: Enter play, Space pass, H hint, S smart sort.</p>`,
+  },
+};
+
 </script>
 <script>
 {
 const $ = id => document.getElementById(id);
-const RANKCN = ['头游', '二游', '三游', '末游'], REL = ['我', '下家', '对家', '上家'];
-const BUDGET = {normal: 0, hard: 900, master: 2000}, DIFFCN = {normal: '普通', hard: '困难', master: '大师'};
-const SPEEDS = {fast: {ai: 260, trick: 520, auto: 320}, mid: {ai: 600, trick: 900, auto: 600}, slow: {ai: 1000, trick: 1400, auto: 900}};
-const BOTNAMES = ['小明', '阿强', '老王', '小芳', '大刘', '阿珍', '小李', '胖虎', '老张', '阿杰'];
-const DEFAULT_SRV = '';   // 部署好 Cloudflare 后填入，例如 'guandan-relay.xxx.workers.dev'
+const BUDGET = {normal: 0, hard: 900, master: 2000};
+let LANG = (() => { try { const v = JSON.parse(localStorage.getItem('gd_set') || '{}').lang; if (v) return v; } catch (e) {} return /^zh/i.test(navigator.language || 'zh') ? 'zh' : 'en'; })();
+const T = (k, ...a) => { const v = (L10N[LANG] && L10N[LANG][k] !== undefined) ? L10N[LANG][k] : L10N.zh[k]; return typeof v === 'function' ? v(...a) : (v === undefined ? k : v); };
+const RANKCN = new Proxy([], {get: (t, i) => T('ranks')[i]});
+const DIFFCN = new Proxy({}, {get: (t, k) => T('diff')[k]});
+const SPEEDS = {fast: {ai: 260, trick: 1100, auto: 320}, mid: {ai: 600, trick: 1400, auto: 600}, slow: {ai: 1000, trick: 1800, auto: 900}, slower: {ai: 1700, trick: 2400, auto: 1300}};   // trick = 每一轮出完后的停顿
+const BOTNAMES = {zh: ['小明', '阿强', '老王', '小芳', '大刘', '阿珍', '小李', '胖虎', '老张', '阿杰'], en: ['Alex', 'Ben', 'Chloe', 'Dan', 'Emma', 'Finn', 'Grace', 'Hugo', 'Ivy', 'Jack']};
+const DEFAULT_SRV = /\.workers\.dev$/.test(location.host) ? location.host : 'guandan.heqr1.workers.dev';   // 你的 Cloudflare 服务器
 const store = {get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }};
 const UI = {sel: new Set(), groups: [], hints: null, hi: -1, sfs: null, sfi: -1, phase: 'play',
   reqId: 0, thinking: -1, set: Object.assign({diff: 'normal', speed: 'fast', autoPass: true, autoSort: true, tracker: false}, store.get('gd_set', {}))};
+UI.set.lang = LANG;
+let BOTNM = store.get('gd_botnames', ['', '', '', '']);   // 单机时电脑玩家的自定义名字
 const IN_CLAUDE = /claude/.test(location.host);
 // 联机状态
 let MODE = 'offline', ME = 0, SEATS = null;
-const NET = {ws: null, room: '', srv: store.get('gd_srv', DEFAULT_SRV), cid: store.get('gd_cid', null), key: '', people: {}, started: false, retry: 0,
+const NET = {ws: null, room: '', srv: store.get('gd_srv', '') || DEFAULT_SRV, cid: store.get('gd_cid', null), key: '', people: {}, started: false, retry: 0,
   fx: {seq: 0}, pick: null, waiting: false, lastFx: 0, dealKey: '', shownEnd: -1, status: '', autoSeq: ''};
 if (!NET.cid) { NET.cid = Math.random().toString(36).slice(2, 10); store.set('gd_cid', NET.cid); }
 let myName = store.get('gd_name', '');
@@ -762,29 +874,34 @@ let myName = store.get('gd_name', '');
 let S = newGameState();
 let timer = null;
 const sched = (fn, ms) => { clearTimeout(timer); timer = setTimeout(fn, ms); };
-const sp = () => SPEEDS[UI.set.speed];
+const sp = () => SPEEDS[UI.set.speed] || SPEEDS.fast;
 const rel = p => (p - ME + 4) % 4;
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
-function nameOf(p) { if (MODE === 'offline') return REL[rel(p)]; const s = SEATS && SEATS[p]; return s && s.name ? s.name : '座位' + (p + 1); }
+function nameOf(p) { if (MODE === 'offline') return (p !== ME && BOTNM[p]) || T('rel')[rel(p)]; const s = SEATS && SEATS[p]; return s && s.name ? s.name : T('seat', p + 1); }
+function isBotSeat(p) { return MODE === 'offline' ? p !== ME : !!(SEATS && SEATS[p] && SEATS[p].kind === 'bot'); }
 function tagOf(p) {
-  if (MODE === 'offline' || !SEATS || !SEATS[p]) return '';
+  if (MODE === 'offline') return p !== ME && BOTNM[p] ? '<span class="tag">Bot</span>' : '';
+  if (!SEATS || !SEATS[p]) return '';
   const s = SEATS[p];
   if (s.kind === 'bot') return '<span class="tag">Bot</span>';
-  if (s.kind === 'remote' && !s.online) return '<span class="tag off">掉线·电脑代打</span>';
+  if (s.kind === 'remote' && !s.online) return `<span class="tag off">${T('offBot')}</span>`;
   return '';
 }
 
-function blank() { S.hands = [[], [], [], []]; S.lastAction = [null, null, null, null]; S.finished = []; S.played = []; S.level = S.levels[S.banker]; S.turn = -1; S.trick = null; S.info = ''; }
+function blank() { S.hands = [[], [], [], []]; S.lastAction = [null, null, null, null]; S.finished = []; S.played = []; S.level = S.levels[S.banker]; S.turn = -1; S.trick = null; S.log = []; }
 function loadOffline() {
   S = newGameState(); blank();
   const saved = store.get('gd_game', null);
   if (saved && saved.levels) { S.levels = saved.levels; S.banker = saved.banker; S.round = saved.round || 0; S.lastOrder = saved.lastOrder; }
 }
 function saveGame() { if (MODE === 'offline') store.set('gd_game', S.gameOver ? null : {levels: S.levels, banker: S.banker, round: S.round, lastOrder: S.lastOrder}); }
-function cardName(c) { return c.r >= 15 ? RN[c.r] : SUIT_SYM[c.s] + RN[c.r]; }
+function cardName(c) { return c.r >= 15 ? T(c.r === 16 ? 'bj' : 'sj') : SUIT_SYM[c.s] + RN[c.r]; }
+// 牌桌中间的信息：存成 [键, 参数...]，显示时按当前语言翻译；参数 {p} 是玩家，{c} 是牌
+function logLine(e) { const a = e.slice(1).map(x => x && x.p !== undefined ? nameOf(x.p) : x && x.c ? cardName(x.c) : x && x.ps ? x.ps.map(nameOf).join(LANG === 'zh' ? '、' : ', ') : x); return T(e[0], ...a); }
+function addLog(...e) { (S.log = S.log || []).push(e); }
 function toast(t, ms = 1100) { const e = $('toast'); e.textContent = t; e.classList.add('show'); clearTimeout(e._t); e._t = setTimeout(() => e.classList.remove('show'), ms); }
 function boom(t) { const e = $('boom'); e.textContent = t; e.classList.remove('go'); void e.offsetWidth; e.classList.add('go'); }
-function fx(text, isBoom) { NET.fx = {seq: NET.fx.seq + 1, text, boom: isBoom}; isBoom ? boom(text) : toast(text); }
+function fx(key, args, isBoom) { NET.fx = {seq: NET.fx.seq + 1, key, args: args || [], boom: isBoom}; const t = logLine([key, ...(args || [])]); isBoom ? boom(t) : toast(t); }
 
 function cardHTML(c, cls, style) {
   const L = S.level, red = c.s === 1 || c.s === 3 || c.r === 16;
@@ -818,10 +935,11 @@ function sizeVars() {
 function renderHand() {
   const el = $('hand'), cols = columns(), cw = UI.cw, ch = Math.round(cw * 1.4);
   const maxN0 = Math.max(1, ...cols.map(c => c.cards.length));
-  const room = innerHeight - $('bar').offsetHeight - $('ctrl').offsetHeight - 125 - ch - 14;
-  const vo = Math.round(Math.max(cw * 0.3, Math.min(cw * 0.44, room / Math.max(1, maxN0 - 1))));
   const W = el.clientWidth || innerWidth, n = cols.length;
   const spx = n > 1 ? Math.min(cw + 4, (W - cw - 12) / (n - 1)) : 0;
+  // 列之间够宽：点数和花色横排，每张露一行即可；太挤：竖排，每张多露一点，保证花色看得见
+  const horiz = n <= 1 || spx >= cw * 0.82;
+  const vo = Math.round(horiz ? cw * 0.4 : cw * 0.7);
   const x0 = (W - (spx * (n - 1) + cw)) / 2;
   el.style.height = (ch + (maxN0 - 1) * vo + 14) + 'px';
   const ret = UI.phase === 'return';
@@ -829,7 +947,7 @@ function renderHand() {
   cols.forEach((col, i) => col.cards.forEach((c, j) => {
     const sel = UI.sel.has(c.id);
     const dim = ret && !(c.r <= 10 && !isWild(c, S.level));
-    h += cardHTML(c, 'card' + (sel ? ' sel' : '') + (col.locked ? ' grp' : '') + (dim ? ' dim' : ''), `left:${x0 + i * spx}px;top:${12 + j * vo - (sel ? 10 : 0)}px;z-index:${i * 20 + j}`);
+    h += cardHTML(c, 'card' + (horiz && c.r < 15 ? ' h' : '') + (sel ? ' sel' : '') + (col.locked ? ' grp' : '') + (dim ? ' dim' : ''), `left:${x0 + i * spx}px;top:${12 + j * vo - (sel ? 10 : 0)}px;z-index:${i * 20 + j}`);
   }));
   el.innerHTML = h;
   UI.cols = cols;
@@ -842,21 +960,22 @@ function miniRow(cards, label) {
 }
 function renderPlayed(p) {
   const a = S.lastAction[p], el = $('p' + rel(p));
-  if (S.roundOver && S.hands[p].length && S.hands[p][0].r) { const m = miniRow(sortHand(S.hands[p], S.level), `剩余 ${S.hands[p].length} 张`); el.innerHTML = m.h; el.style.width = m.w + 'px'; return; }
+  if (S.roundOver && S.hands[p].length && S.hands[p][0].r) { const m = miniRow(sortHand(S.hands[p], S.level), T('left', S.hands[p].length)); el.innerHTML = m.h; el.style.width = m.w + 'px'; return; }
   if (!a) { el.innerHTML = ''; el.style.width = '0'; return; }
-  if (a === 'pass') { el.innerHTML = '<span class="pass">不出</span>'; el.style.width = 'auto'; return; }
+  if (a === 'pass') { el.innerHTML = `<span class="pass">${T('pass')}</span>`; el.style.width = 'auto'; return; }
   const cards = sortHand(a.cards, S.level);
   if (SEQ_TYPES[a.type] || a.type === 'sf') cards.sort((x, y) => (isWild(x, S.level) - isWild(y, S.level)) || x.r - y.r);
-  const m = miniRow(cards, TYPE_CN[a.type]);
+  const m = miniRow(cards, T('types')[a.type]);
   el.innerHTML = m.h; el.style.width = m.w + 'px';
 }
 function renderInfo(p) {
   const n = S.hands[p].length, fi = S.finished.indexOf(p);
   const turn = S.turn === p && !S.roundOver && UI.phase !== 'wait';
   const el = $('i' + rel(p));
-  el.className = 'info' + (turn ? ' turn' : '');
+  el.className = 'info' + (turn ? ' turn' : '') + (isBotSeat(p) ? ' ed' : '');
+  el.dataset.seat = p;
   el.innerHTML = `<span class="nm">${esc(nameOf(p))}${fi >= 0 ? ` <span class="rk">${RANKCN[fi]}</span>` : ''}</span>${tagOf(p)}` +
-    (UI.thinking === p ? '<span class="cnt">思考中…</span>' : p === ME ? `<span class="cnt">${n} 张</span>` : `<span class="cnt"><span class="back"></span><span class="${n <= 10 && n > 0 ? 'warn' : ''}">${n}</span></span>`);
+    (UI.thinking === p ? `<span class="cnt">${T('thinking')}</span>` : p === ME ? `<span class="cnt">${T('cards', n)}</span>` : `<span class="cnt"><span class="back"></span><span class="${n <= 10 && n > 0 ? 'warn' : ''}">${n}</span></span>`);
 }
 function renderTracker() {
   const el = $('tracker');
@@ -865,7 +984,7 @@ function renderTracker() {
   if (!UI.set.tracker) return;
   const U = unseenFor(S, ME), L = S.level;
   const ranks = [16, 15, L, ...[14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2].filter(r => r !== L)];
-  const lab = r => r === 16 ? '大' : r === 15 ? '小' : RN[r];
+  const lab = r => r === 16 ? T('trBj') : r === 15 ? T('trSj') : RN[r];
   el.innerHTML = ranks.map(r => `<span>${lab(r)}</span>`).join('') +
     ranks.map(r => { const v = U.nat[r] + (r === L ? U.w : 0); return `<span class="${v === 0 ? 'z' : ''}">${v}</span>`; }).join('');
   el.style.gridTemplateColumns = `repeat(${ranks.length},auto)`;
@@ -876,21 +995,21 @@ function renderNet() {
   if (MODE === 'offline') return;
   const ok = NET.ws && NET.ws.readyState === 1;
   e.classList.toggle('bad', !ok);
-  e.textContent = `线上 ${NET.room} · ${ok ? (NET.status || '已连接') : '重连中…'}`;
+  e.textContent = `${T('online')} ${NET.room} · ${ok ? (NET.status ? T(NET.status) : T('connected')) : T('reconnecting')}`;
 }
 function myTurnNow() { return S.turn === ME && UI.phase === 'play' && !S.roundOver && !UI.busy && !NET.waiting; }
 function render() {
   $('lv0').textContent = RN[S.levels[ME % 2]]; $('lv1').textContent = RN[S.levels[1 - ME % 2]];
   $('lvc').textContent = RN[S.level] || '2';
-  $('dfl').textContent = MODE === 'guest' ? '' : '电脑：' + DIFFCN[UI.set.diff];
+  $('dfl').textContent = MODE === 'guest' ? '' : T('cpu') + DIFFCN[UI.set.diff];
   for (const p of [0, 1, 2, 3]) { renderInfo(p); renderPlayed(p); }
   const myTurn = myTurnNow();
-  $('bPlay').textContent = UI.phase === 'return' ? '还贡' : '出牌';
+  $('bPlay').textContent = UI.phase === 'return' ? T('ret') : T('play');
   $('bPlay').disabled = !(myTurn || (UI.phase === 'return' && !NET.waiting));
   $('bPass').disabled = !(myTurn && S.trick);
   $('bHint').disabled = !myTurn;
   const tableEmpty = S.lastAction.every(a => !a);
-  $('info').textContent = tableEmpty ? (S.info || '') : '';
+  $('info').textContent = tableEmpty ? (S.log || []).map(logLine).join('\n') : '';
   renderTracker(); renderNet(); renderHand();
   if (MODE === 'host') hostBroadcastSoon();
 }
@@ -908,32 +1027,31 @@ function newRound() {
   startRound(S);
   S.tribDone = false;
   UI.sel.clear(); UI.groups = []; UI.hints = null; UI.sfs = null;
-  const L = RN[S.level], lines = [`第 ${S.round} 局 · 打 ${L} · 红桃${L}是配牌`];
+  S.log = [['lRound', S.round, RN[S.level]]];
   if (S.tribute) {
-    const T = S.tribute;
-    if (T.anti) lines.push(`${T.givers.map(nameOf).join('、')} 有两张大王，抗贡！`);
-    else for (const g of T.gives) lines.push(`${nameOf(g.from)} 进贡 ${cardName(g.card)} 给 ${nameOf(g.to)}`);
+    const TR = S.tribute;
+    if (TR.anti) addLog('lAnti', {ps: TR.givers});
+    else for (const g of TR.gives) addLog('lGive', {p: g.from}, {c: g.card}, {p: g.to});
   }
-  S.info = lines.join('\n');
   processReturns();
 }
 function processReturns() {
-  const T = S.tribute;
+  const TR = S.tribute;
   UI.waitRet = -1;
-  if (T && !T.anti) {
-    for (const r of T.rets) {
+  if (TR && !TR.anti) {
+    for (const r of TR.rets) {
       if (r.done) continue;
       const k = controller(r.from);
-      if (k === 'local') { UI.phase = 'return'; if (UI.set.autoSort) smartSort(true); render(); toast('请选一张 10 或以下的牌还贡', 2000); return; }
-      if (k === 'remote') { UI.phase = 'wait'; UI.waitRet = r.from; if (!/等待.*还贡…$/.test(S.info)) S.info += `\n等待 ${nameOf(r.from)} 还贡…`; if (UI.set.autoSort) smartSort(true); render(); return; }
+      if (k === 'local') { UI.phase = 'return'; if (UI.set.autoSort) smartSort(true); render(); toast(T('pickRet'), 2000); return; }
+      if (k === 'remote') { UI.phase = 'wait'; UI.waitRet = r.from; if (!S.log.some(e => e[0] === 'lWaitRet')) addLog('lWaitRet', {p: r.from}); if (UI.set.autoSort) smartSort(true); render(); return; }
       doReturn(S, r, chooseReturn(S.hands[r.from], S.level));
-      S.info += `\n${nameOf(r.from)} 还贡 ${cardName(r.card)} 给 ${nameOf(r.to)}`;
+      addLog('lRet', {p: r.from}, {c: r.card}, {p: r.to});
     }
   }
-  if (T) S.turn = T.leader;
+  if (TR) S.turn = TR.leader;
   UI.phase = 'play'; S.tribDone = true;
   if (UI.set.autoSort) smartSort(true);
-  S.info += `\n${nameOf(S.turn)} 先出`;
+  addLog('lFirst', {p: S.turn});
   render();
   sched(tick, 700);
 }
@@ -946,7 +1064,7 @@ function tick() {
   const k = controller(p);
   if (k === 'local') {
     if (S.trick && UI.set.autoPass && genPlays(S.hands[ME], S.level, S.trick.combo).length === 0) {
-      toast('要不起', 700); UI.busy = true; render();
+      toast(T('noBeat'), 700); UI.busy = true; render();
       sched(() => act(ME, null), sp().auto);
     }
     return;
@@ -988,28 +1106,28 @@ function act(p, c) {
   UI.hints = null; UI.busy = false; UI.reqId++; UI.thinking = -1;
   if (c && S.trick === null) S.lastAction = [null, null, null, null];
   const ev = c ? doPlay(S, p, c) : doPass(S, p);
-  if (c && bombLvl(c)) fx(c.type === 'kings' ? '天王炸！' : c.type === 'sf' ? '同花顺！' : '炸弹！', true);
+  if (c && bombLvl(c)) fx(c.type === 'kings' ? 'fxKings' : c.type === 'sf' ? 'fxSF' : 'fxBomb', [], true);
   if (c && p === ME) UI.sel.clear();
-  if (c && S.hands[p].length === 0 && !S.roundOver) fx(`${nameOf(p)} ${RANKCN[S.finished.indexOf(p)]}！`);
+  if (c && S.hands[p].length === 0 && !S.roundOver) fx('fxOutR', [{p}, S.finished.indexOf(p)]);
   render();
-  if (ev === 'roundEnd') { fx('本局结束，亮牌'); saveGame(); sched(showRoundEnd, 2800); return; }
-  if (ev === 'trickEnd') { UI.busy = true; render(); sched(() => { UI.busy = false; S.lastAction = [null, null, null, null]; S.info = ''; render(); tick(); }, sp().trick); return; }
+  if (ev === 'roundEnd') { fx('fxEnd'); saveGame(); statRound(); sched(showRoundEnd, 2800); return; }
+  if (ev === 'trickEnd') { UI.busy = true; render(); sched(() => { UI.busy = false; S.lastAction = [null, null, null, null]; S.log = []; render(); tick(); }, sp().trick); return; }
   tick();
 }
 function showRoundEnd() {
   const R = S.result; if (!R) return;
   NET.shownEnd = S.round;
   const mine = R.team === ME % 2;
-  let h = `<h2>${R.win ? (mine ? '🎉 我方打过 A，赢得整场！' : '对方打过 A，赢得整场') : (mine ? '本局我方获胜' : '本局对方获胜')}</h2><div class="ord">`;
+  let h = `<h2>${R.win ? (mine ? T('winAll') : T('loseAll')) : (mine ? T('winR') : T('loseR'))}</h2><div class="ord">`;
   R.order.forEach((p, i) => {
     const hand = S.hands[p].filter(c => c.r);
     const left = hand.length ? `<div class="rev">${sortHand(hand, S.level).map(c => `<span class="${c.s === 1 || c.s === 3 || c.r === 16 ? 'r' : ''}">${cardName(c)}</span>`).join(' ')}</div>` : '';
-    h += `<b>${RANKCN[i]}</b><span>${esc(nameOf(p))}${p % 2 === ME % 2 ? '（我方）' : '（对方）'}${left}</span>`;
+    h += `<b>${RANKCN[i]}</b><span>${esc(nameOf(p))}${p % 2 === ME % 2 ? T('usTag') : T('themTag')}${left}</span>`;
   });
   h += '</div>';
-  if (!R.win) h += `<p>${mine ? '我方' : '对方'}升 ${R.up} 级 → 下局打 <b>${RN[S.levels[R.team]]}</b></p><p>级数：我方 ${RN[S.levels[ME % 2]]} · 对方 ${RN[S.levels[1 - ME % 2]]}</p>`;
-  if (MODE === 'guest') h += `<p class="note">等待房主开始${R.win ? '新的一场' : '下一局'}…</p>`;
-  else h += `<div class="row">${R.win ? '<button class="bt main" id="mNew">再来一场</button>' : '<button class="bt main" id="mNext">下一局</button>'}</div>`;
+  if (!R.win) h += `<p>${T('upTo', mine ? T('us') : T('them'), R.up, RN[S.levels[R.team]])}</p><p>${T('lvNow', RN[S.levels[ME % 2]], RN[S.levels[1 - ME % 2]])}</p>`;
+  if (MODE === 'guest') h += `<p class="note">${R.win ? T('waitNew') : T('waitNext')}</p>`;
+  else h += `<div class="row">${R.win ? `<button class="bt main" id="mNew">${T('again')}</button>` : `<button class="bt main" id="mNext">${T('next')}</button>`}</div>`;
   modal(h);
   if (MODE === 'guest') return;
   if (R.win) $('mNew').onclick = () => { closeModal(); S = newGameState(); saveGame(); newRound(); };
@@ -1024,20 +1142,20 @@ function onPlay() {
   if (UI.phase === 'return') {
     if (NET.waiting) return;
     const cs = selCards();
-    if (cs.length !== 1 || cs[0].r > 10 || isWild(cs[0], S.level)) { toast('请选一张 10 或以下的牌'); return; }
+    if (cs.length !== 1 || cs[0].r > 10 || isWild(cs[0], S.level)) { toast(T('pickRet2')); return; }
     UI.sel.clear();
     if (MODE === 'guest') { netSend({t: 'ret', id: cs[0].id}); NET.waiting = true; render(); return; }
     const r = S.tribute.rets.find(x => x.from === ME && !x.done);
-    doReturn(S, r, cs[0]); S.info += `\n${nameOf(ME)} 还贡 ${cardName(cs[0])} 给 ${nameOf(r.to)}`;
+    doReturn(S, r, cs[0]); addLog('lRet', {p: ME}, {c: cs[0]}, {p: r.to});
     processReturns(); return;
   }
   if (!myTurnNow()) return;
   const cs = selCards();
-  if (!cs.length) { toast('请先选牌'); return; }
+  if (!cs.length) { toast(T('selFirst')); return; }
   const it = analyze(cs, S.level);
-  if (!it.length) { toast('牌型不对'); return; }
+  if (!it.length) { toast(T('badType')); return; }
   const b = bestInterp(it, S.trick ? S.trick.combo : null);
-  if (!b) { toast('管不上'); return; }
+  if (!b) { toast(T('cantBeat')); return; }
   clearTimeout(timer);
   if (MODE === 'guest') { netSend({t: 'play', ids: cs.map(c => c.id)}); NET.waiting = true; UI.sel.clear(); render(); return; }
   act(ME, {...b, cards: cs});
@@ -1051,7 +1169,7 @@ function onPass() {
 function onHint() {
   if (!myTurnNow()) return;
   if (!UI.hints) { UI.hints = userHints(); UI.hi = -1; }
-  if (!UI.hints.length) { toast('没有能管上的牌'); return; }
+  if (!UI.hints.length) { toast(T('noHint')); return; }
   UI.hi = (UI.hi + 1) % UI.hints.length;
   UI.sel = new Set(UI.hints[UI.hi].cards.map(c => c.id));
   render();
@@ -1093,24 +1211,24 @@ function smartSort(quiet) {
   lock.sort((a, b) => (bombLvl(b) > 0) - (bombLvl(a) > 0) || bombLvl(b) - bombLvl(a) || order[a.type] - order[b.type] || b.v - a.v);
   UI.groups = lock.map(g => g.cards.map(c => c.id));
   UI.sel.clear();
-  if (!quiet) { render(); toast(`已按最优拆法整理：约 ${d.hands} 手牌`); }
+  if (!quiet) { render(); toast(T('sorted', d.hands)); }
 }
 function onSF() {
   if (!UI.sfs || UI.sfsKey !== S.hands[ME].length) { UI.sfs = findSFs(S.hands[ME], S.level); UI.sfi = -1; UI.sfsKey = S.hands[ME].length; }
-  if (!UI.sfs.length) { toast('手里组不成同花顺'); return; }
+  if (!UI.sfs.length) { toast(T('noSF')); return; }
   UI.sfi = (UI.sfi + 1) % UI.sfs.length;
   const sf = UI.sfs[UI.sfi];
   UI.sel = new Set(sf.cards.map(c => c.id));
   render();
-  toast(`同花顺 ${UI.sfi + 1}/${UI.sfs.length}${sf.miss ? `（用 ${sf.miss} 张配）` : ''}，点「理牌」放成一列`, 1600);
+  toast(T('sfPick', UI.sfi + 1, UI.sfs.length, sf.miss), 1600);
 }
 function onGroup() {
-  if (!UI.sel.size) { toast('先选几张牌，再点理牌'); return; }
+  if (!UI.sel.size) { toast(T('groupFirst')); return; }
   const ids = [...UI.sel];
   UI.groups = UI.groups.map(g => g.filter(id => !UI.sel.has(id))).filter(g => g.length);
   UI.groups.push(ids); UI.sel.clear(); render();
 }
-function onReset() { UI.groups = []; UI.sel.clear(); render(); }
+function onReset() { UI.groups = []; UI.sel.clear(); UI.hints = null; UI.hi = -1; UI.sfs = null; render(); toast(T('resetDone'), 900); }
 
 // ================= 联机 =================
 function normSrv(s) { s = (s || '').trim().replace(/\/+$/, ''); if (!s) return ''; if (!/^(https?|wss?):\/\//.test(s)) s = 'https://' + s; return s; }
@@ -1123,9 +1241,11 @@ function connect() {
   if (NET.ws) { try { NET.ws.onclose = null; NET.ws.close(); } catch (e) {} }
   let ws;
   try { ws = new WebSocket(`${wsBase()}/room/${NET.room}?cid=${NET.cid}` + (MODE === 'host' ? `&host=1&key=${NET.key}` : '')); }
-  catch (e) { NET.status = '地址无效'; renderNet(); return; }
+  catch (e) { NET.status = 'badAddr'; renderNet(); return; }
   NET.ws = ws;
-  ws.onopen = () => { NET.retry = 0; NET.status = ''; if (MODE === 'guest') netSend({t: 'hello', name: myName}); else hostBroadcastSoon(); renderNet(); };
+  clearTimeout(NET.slowT);
+  NET.slowT = setTimeout(() => { if (NET.ws === ws && ws.readyState !== 1) { NET.status = 'cantConn'; renderNet(); renderLobby(); testServer(true); } }, 8000);
+  ws.onopen = () => { NET.retry = 0; NET.status = ''; NET.testMsg = ''; renderLobby(); if (MODE === 'guest') netSend({t: 'hello', name: myName}); else hostBroadcastSoon(); renderNet(); };
   ws.onmessage = e => {
     if (e.data === 'pong') return;
     let d; try { d = JSON.parse(e.data); } catch (err) { return; }
@@ -1134,12 +1254,26 @@ function connect() {
   ws.onclose = e => {
     if (NET.ws !== ws) return;
     renderNet();
-    if (e.code === 4000) { NET.status = '已在别处打开'; renderNet(); return; }
-    if (e.code === 4003) { NET.status = '房主身份校验失败'; renderNet(); return; }
+    if (e.code === 4000) { NET.status = 'elsewhere'; renderNet(); return; }
+    if (e.code === 4003) { NET.status = 'notHost'; renderNet(); return; }
+    if (NET.retry >= 2 && NET.status !== 'cantConn') { NET.status = 'cantConn'; renderLobby(); testServer(true); }
     setTimeout(() => { if (NET.ws === ws) connect(); }, Math.min(8000, 700 * 2 ** NET.retry++));
   };
 }
 setInterval(() => { if (NET.ws && NET.ws.readyState === 1) NET.ws.send('ping'); renderNet(); }, 20000);
+async function testServer(quiet) {
+  const base = normSrv(NET.srv);
+  let msg;
+  try {
+    const ctl = new AbortController(); setTimeout(() => ctl.abort(), 8000);
+    const r = await fetch(base + '/relay', {signal: ctl.signal, cache: 'no-store'});
+    const t = await r.text();
+    msg = t.trim() === 'guandan relay ok' ? T('srvOk') : T('srvNotRelay');
+  } catch (e) { msg = T('srvFail'); }
+  NET.testMsg = msg; renderLobby();
+  if (!quiet) toast(msg, 3000);
+  return msg;
+}
 function netSend(m, to) { if (NET.ws && NET.ws.readyState === 1) NET.ws.send(JSON.stringify(MODE === 'host' ? {to: to || '*', m} : {m})); }
 
 // ----- 房主 -----
@@ -1151,7 +1285,7 @@ function createRoom() {
   NET.key = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
   store.set('gd_host', {room: NET.room, key: NET.key, srv: NET.srv});
   MODE = 'host'; ME = 0; NET.started = false; NET.people = {};
-  SEATS = [{kind: 'local', name: myName || '房主', cid: NET.cid, online: true}, emptySeat(), emptySeat(), emptySeat()];
+  SEATS = [{kind: 'local', name: myName || T('hostDefault'), cid: NET.cid, online: true}, emptySeat(), emptySeat(), emptySeat()];
   try { history.replaceState(null, '', shareLink()); } catch (e) {}
   connect(); showLobby();
 }
@@ -1162,7 +1296,7 @@ function resumeHost(h, g) {
     SEATS.forEach(s => { if (s.kind === 'remote') s.online = false; });
     ME = SEATS.findIndex(s => s.kind === 'local');
     if (g.S) { S = g.S; UI.phase = g.phase || 'play'; }
-  } else { SEATS = [{kind: 'local', name: myName || '房主', cid: NET.cid, online: true}, emptySeat(), emptySeat(), emptySeat()]; ME = 0; NET.started = false; NET.people = {}; }
+  } else { SEATS = [{kind: 'local', name: myName || T('hostDefault'), cid: NET.cid, online: true}, emptySeat(), emptySeat(), emptySeat()]; ME = 0; NET.started = false; NET.people = {}; }
   connect();
   if (!NET.started) { showLobby(); return; }
   hideLobby(); render();
@@ -1174,11 +1308,11 @@ let bcT = null;
 function hostBroadcastSoon() { if (MODE !== 'host') return; clearTimeout(bcT); bcT = setTimeout(hostBroadcast, 30); }
 function lobbyMsg() { return {t: 'lobby', room: NET.room, started: NET.started, seats: SEATS, people: Object.entries(NET.people).filter(([c, p]) => p.online && seatOfCid(c) < 0).map(([cid, p]) => ({cid, name: p.name}))}; }
 function viewFor(p) {
-  const T = S.tribute;
+  const TR = S.tribute;
   return {t: 'state', mySeat: p, seats: SEATS, levels: S.levels, level: S.level, banker: S.banker, round: S.round, turn: S.turn, trick: S.trick,
-    lastAction: S.lastAction, finished: S.finished, played: S.played, info: S.info, roundOver: S.roundOver, result: S.result, gameOver: S.gameOver,
+    lastAction: S.lastAction, finished: S.finished, played: S.played, log: S.log, roundOver: S.roundOver, result: S.result, gameOver: S.gameOver,
     counts: S.hands.map(h => h.length), hand: S.hands[p], reveal: S.roundOver ? S.hands : null, busy: !!UI.busy, thinking: UI.thinking,
-    retMe: UI.phase === 'wait' && UI.waitRet === p && !!T, phaseWait: UI.phase === 'wait' || UI.phase === 'return', fx: NET.fx,
+    retMe: UI.phase === 'wait' && UI.waitRet === p && !!TR, phaseWait: UI.phase === 'wait' || UI.phase === 'return', fx: NET.fx,
     dealKey: S.round + ':' + (S.tribDone ? 1 : 0)};
 }
 function hostBroadcast() {
@@ -1211,7 +1345,7 @@ function hostOnMsg(d) {
   const pp = NET.people[cid] = NET.people[cid] || {name: '', online: true};
   pp.online = true;
   if (m.t === 'hello' || m.t === 'name') {
-    pp.name = String(m.name || '').slice(0, 12) || pp.name || '玩家';
+    pp.name = String(m.name || '').slice(0, 12) || pp.name || T('player');
     const s = seatOfCid(cid);
     if (s >= 0) {
       const wasOff = !SEATS[s].online;
@@ -1224,39 +1358,40 @@ function hostOnMsg(d) {
     if (NET.started || seatOfCid(cid) >= 0) return;
     const j = m.seat | 0;
     if (j < 0 || j > 3 || SEATS[j].kind !== 'empty') return;
-    pp.name = String(m.name || pp.name || '玩家').slice(0, 12);
+    pp.name = String(m.name || pp.name || T('player')).slice(0, 12);
     SEATS[j] = {kind: 'remote', name: pp.name, cid, online: true};
     hostBroadcastSoon(); return;
   }
   if (!NET.started) return;
+  if (m.t === 'botname') { const j = m.seat | 0; if (SEATS[j] && SEATS[j].kind === 'bot') { SEATS[j].name = String(m.name || '').slice(0, 12) || T('computer'); render(); } return; }
   const s = seatOfCid(cid);
   if (s < 0) return;
-  const err = msg => netSend({t: 'err', msg}, cid);
+  const err = key => netSend({t: 'err', key}, cid);
   if (m.t === 'ret') {
     if (UI.waitRet !== s) return;
     const c = S.hands[s].find(x => x.id === m.id);
-    if (!c || c.r > 10 || isWild(c, S.level)) { err('请选一张 10 或以下的牌'); hostBroadcastSoon(); return; }
+    if (!c || c.r > 10 || isWild(c, S.level)) { err('pickRet2'); hostBroadcastSoon(); return; }
     const r = S.tribute.rets.find(x => x.from === s && !x.done);
-    S.info = S.info.replace(/\n等待.*还贡…$/, ''); doReturn(S, r, c); S.info += `\n${nameOf(s)} 还贡 ${cardName(c)} 给 ${nameOf(r.to)}`;
+    S.log = S.log.filter(e => e[0] !== 'lWaitRet'); doReturn(S, r, c); addLog('lRet', {p: s}, {c}, {p: r.to});
     processReturns(); return;
   }
   if (S.turn !== s || UI.phase !== 'play' || UI.busy || S.roundOver) { hostBroadcastSoon(); return; }
-  if (m.t === 'pass') { if (!S.trick) { err('必须出牌'); hostBroadcastSoon(); return; } clearTimeout(timer); act(s, null); return; }
+  if (m.t === 'pass') { if (!S.trick) { err('mustPlay'); hostBroadcastSoon(); return; } clearTimeout(timer); act(s, null); return; }
   if (m.t === 'play') {
     const ids = Array.isArray(m.ids) ? m.ids : [];
     const cards = ids.map(id => S.hands[s].find(x => x.id === id));
-    if (!cards.length || !cards.every(Boolean) || new Set(ids).size !== ids.length) { err('牌不在手里'); hostBroadcastSoon(); return; }
+    if (!cards.length || !cards.every(Boolean) || new Set(ids).size !== ids.length) { err('notInHand'); hostBroadcastSoon(); return; }
     const b = bestInterp(analyze(cards, S.level), S.trick ? S.trick.combo : null);
-    if (!b) { err('管不上'); hostBroadcastSoon(); return; }
+    if (!b) { err('cantBeat'); hostBroadcastSoon(); return; }
     clearTimeout(timer); act(s, {...b, cards});
   }
 }
 function startOnline() {
   const used = new Set(SEATS.map(s => s.name));
-  const pool = BOTNAMES.filter(n => !used.has(n));
-  SEATS = SEATS.map(s => s.kind === 'empty' ? {kind: 'bot', name: pool.splice(Math.random() * pool.length | 0, 1)[0] || '电脑', cid: null, online: true} : s);
+  const pool = BOTNAMES[LANG === 'en' ? 'en' : 'zh'].filter(n => !used.has(n));
+  SEATS = SEATS.map(s => s.kind === 'empty' ? {kind: 'bot', name: pool.splice(Math.random() * pool.length | 0, 1)[0] || T('computer'), cid: null, online: true} : s);
   ME = SEATS.findIndex(s => s.kind === 'local');
-  NET.started = true;
+  NET.started = true; statPeople();
   S = newGameState();
   hideLobby(); closeModal();
   newRound();
@@ -1269,8 +1404,8 @@ function guestOnMsg(m) {
     if (!m.started || seatOfCidG(m.seats) < 0) { NET.lobby = m; showLobby(); }
     return;
   }
-  if (m.t === 'hostgone') { NET.status = '房主掉线，等待…'; renderNet(); toast('房主连接中断，等他回来', 2500); return; }
-  if (m.t === 'err') { NET.waiting = false; toast(m.msg); render(); return; }
+  if (m.t === 'hostgone') { NET.status = 'hostGone'; renderNet(); toast(T('hostGoneT'), 2500); return; }
+  if (m.t === 'err') { NET.waiting = false; toast(T(m.key || 'cantBeat')); render(); return; }
   if (m.t === 'state') applyView(m);
 }
 function seatOfCidG(seats) { return seats.findIndex(s => s.cid === NET.cid && s.kind === 'remote'); }
@@ -1280,20 +1415,21 @@ function applyView(v) {
   const newDeal = v.dealKey !== NET.dealKey;
   ME = v.mySeat; SEATS = v.seats;
   Object.assign(S, {level: v.level, levels: v.levels, banker: v.banker, round: v.round, turn: v.turn, trick: v.trick, lastAction: v.lastAction,
-    finished: v.finished, played: v.played, info: v.info, roundOver: v.roundOver, result: v.result, gameOver: v.gameOver, tribute: null});
+    finished: v.finished, played: v.played, log: v.log || [], roundOver: v.roundOver, result: v.result, gameOver: v.gameOver, tribute: null});
   S.hands = [0, 1, 2, 3].map(p => p === ME ? v.hand : (v.reveal ? v.reveal[p] : Array.from({length: v.counts[p]}, (_, i) => ({id: -1000 - p * 40 - i, r: 0, s: -1}))));
   UI.busy = v.busy; UI.thinking = v.thinking; NET.waiting = false;
   UI.phase = v.retMe ? 'return' : v.phaseWait ? 'wait' : 'play';
   if (newDeal) { NET.dealKey = v.dealKey; UI.hints = null; UI.sfs = null; if (UI.set.autoSort) smartSort(true); }
-  if (v.fx && v.fx.seq > NET.lastFx) { if (NET.lastFx) (v.fx.boom ? boom(v.fx.text) : toast(v.fx.text)); NET.lastFx = v.fx.seq; }
+  if (v.fx && v.fx.seq > NET.lastFx) { if (NET.lastFx && v.fx.key) { const t = logLine([v.fx.key, ...(v.fx.args || [])]); v.fx.boom ? boom(t) : toast(t); } NET.lastFx = v.fx.seq; }
+  statPeople();
   if (!S.roundOver && $('modal').classList.contains('show') && NET.shownEnd >= 0) { closeModal(); NET.shownEnd = -1; }
   UI.hints = null;
   render();
-  if (S.roundOver && NET.shownEnd !== S.round) { NET.shownEnd = S.round; setTimeout(() => { if (S.roundOver) showRoundEnd(); }, 2800); }
+  if (S.roundOver && NET.shownEnd !== S.round) { NET.shownEnd = S.round; statRound(); setTimeout(() => { if (S.roundOver) showRoundEnd(); }, 2800); }
   // 要不起自动跳过
   const k = S.round + ':' + S.played.length + ':' + S.turn;
   if (myTurnNow() && S.trick && UI.set.autoPass && NET.autoSeq !== k && genPlays(S.hands[ME], S.level, S.trick.combo).length === 0) {
-    NET.autoSeq = k; toast('要不起', 700);
+    NET.autoSeq = k; toast(T('noBeat'), 700);
     setTimeout(() => { if (NET.autoSeq === k && myTurnNow()) { netSend({t: 'pass'}); NET.waiting = true; render(); } }, sp().auto);
   }
 }
@@ -1319,24 +1455,25 @@ function renderLobby() {
   const cell = j => {
     const s = seats[j], team = j % 2 === 0 ? 'ta' : 'tb';
     const me = j === mySeat, pick = NET.pick === j;
-    if (s.kind === 'empty') return `<button class="st empty ${team} ${pick ? 'pick' : ''}" data-seat="${j}"><span>座位${j + 1}</span><small>${host || mySeat < 0 ? '空位，点击入座' : '空位'}</small></button>`;
-    const tag = s.kind === 'local' ? '房主' : s.kind === 'bot' ? 'Bot' : s.online ? '' : '离线';
-    return `<button class="st ${team} ${pick ? 'pick' : ''}" data-seat="${j}"><small>座位${j + 1}${me ? ' · 你' : ''}</small><span class="nm2">${esc(s.name || '玩家')}</span><small>${tag}</small></button>`;
+    if (s.kind === 'empty') return `<button class="st empty ${team} ${pick ? 'pick' : ''}" data-seat="${j}"><span>${T('seat', j + 1)}</span><small>${host || mySeat < 0 ? T('emptyTap') : T('empty')}</small></button>`;
+    const tag = s.kind === 'local' ? T('hostTag') : s.kind === 'bot' ? 'Bot' : s.online ? '' : T('offline');
+    return `<button class="st ${team} ${pick ? 'pick' : ''}" data-seat="${j}"><small>${T('seat', j + 1)}${me ? ' · ' + T('you') : ''}</small><span class="nm2">${esc(s.name || T('player'))}</span><small>${tag}</small></button>`;
   };
-  const tip = host ? (NET.pick !== null ? '再点一个座位：和他换位置' : '点一个人，再点另一个座位，就能给他换座位') : (mySeat < 0 ? (started ? '这局已经开始了，座位已满' : '点一个空位入座') : '等待房主开始游戏');
-  $('lbox').innerHTML = `<h2>线上房间 ${NET.room}</h2>
-    <p class="note">${ok ? '已连接服务器' : '正在连接服务器…'} · 座位1和3一队，2和4一队</p>
-    <div class="lk"><input id="lkIn" readonly value="${esc(shareLink())}"><button class="bt" id="lkCp">复制链接</button></div>
-    <div class="nmrow"><span>你的名字</span><input id="nmIn" maxlength="12" value="${esc(myName)}" placeholder="起个名字"></div>
-    <div class="cross"><div></div>${cell(2)}<div></div>${cell(3)}<div class="mid">牌桌</div>${cell(1)}<div></div>${cell(0)}<div></div></div>
+  const tip = host ? (NET.pick !== null ? T('tipSwap2') : T('tipSwap')) : (mySeat < 0 ? (started ? T('tipFull') : T('tipSit')) : T('tipWait'));
+  const st = ok ? T('srvConnected') : NET.status === 'cantConn' ? `<b style="color:#c8322b">${T('srvCant')}</b>: ${esc(NET.testMsg || '…')} (${esc(NET.srv)})` : T('srvConnecting');
+  $('lbox').innerHTML = `<h2>${T('room', NET.room)}</h2>
+    <p class="note">${st} · ${T('teams')}</p>
+    <div class="lk"><input id="lkIn" readonly value="${esc(shareLink())}"><button class="bt" id="lkCp">${T('copy')}</button></div>
+    <div class="nmrow"><span>${T('yourName')}</span><input id="nmIn" maxlength="12" value="${esc(myName)}" placeholder="${T('namePh')}"></div>
+    <div class="cross"><div></div>${cell(2)}<div></div>${cell(3)}<div class="mid">${T('table')}</div>${cell(1)}<div></div>${cell(0)}<div></div></div>
     <p class="note">${tip}</p>
-    ${people.length ? `<p class="note">还没入座的人${host ? '（点名字再点座位，可以帮他入座）' : ''}：</p><div class="chips">${people.map(p => `<span class="chip ${NET.pick === 'c:' + p.cid ? 'pick' : ''}" data-cid="${p.cid}">${esc(p.name || '玩家')}</span>`).join('')}</div>` : ''}
-    <div class="row"><button class="bt" id="lbLeave">离开，玩单机</button>${host ? '<button class="bt main" id="lbStart">开始游戏</button>' : ''}</div>
-    ${host ? '<p class="note">不足 4 人时，空位由电脑补上。</p>' : ''}`;
-  $('lkCp').onclick = () => { const i = $('lkIn'); i.select(); try { navigator.clipboard.writeText(i.value).then(() => toast('链接已复制'), () => { document.execCommand('copy'); toast('链接已复制'); }); } catch (e) { document.execCommand('copy'); toast('链接已复制'); } };
+    ${people.length ? `<p class="note">${host ? T('unseatedHost') : T('unseated')}:</p><div class="chips">${people.map(p => `<span class="chip ${NET.pick === 'c:' + p.cid ? 'pick' : ''}" data-cid="${p.cid}">${esc(p.name || T('player'))}</span>`).join('')}</div>` : ''}
+    <div class="row"><button class="bt" id="lbLeave">${T('leaveSolo')}</button>${host ? `<button class="bt main" id="lbStart">${T('start')}</button>` : ''}</div>
+    ${host ? `<p class="note">${T('botFill')}</p>` : ''}`;
+  $('lkCp').onclick = () => { const i = $('lkIn'); i.select(); const done = () => toast(T('copied')); try { navigator.clipboard.writeText(i.value).then(done, () => { document.execCommand('copy'); done(); }); } catch (e) { document.execCommand('copy'); done(); } };
   $('nmIn').onchange = () => {
     myName = $('nmIn').value.trim().slice(0, 12); store.set('gd_name', myName);
-    if (host) { SEATS[ME].name = myName || '房主'; hostBroadcastSoon(); renderLobby(); } else netSend({t: 'name', name: myName});
+    if (host) { SEATS[ME].name = myName || T('hostDefault'); hostBroadcastSoon(); renderLobby(); } else netSend({t: 'name', name: myName});
   };
   $('lbLeave').onclick = leaveOnline;
   if (host) $('lbStart').onclick = () => { if (!myName) { myName = $('nmIn').value.trim(); } startOnline(); };
@@ -1347,13 +1484,13 @@ function onSeatClick(j) {
   if (MODE === 'guest') {
     const seats = (NET.lobby && NET.lobby.seats) || SEATS;
     if (seatOfCidG(seats) >= 0 || seats[j].kind !== 'empty') return;
-    myName = $('nmIn').value.trim().slice(0, 12) || myName || '玩家'; store.set('gd_name', myName);
+    myName = $('nmIn').value.trim().slice(0, 12) || myName || T('player'); store.set('gd_name', myName);
     netSend({t: 'sit', seat: j, name: myName}); return;
   }
   if (NET.pick === null) { if (SEATS[j].kind !== 'empty') { NET.pick = j; renderLobby(); } return; }
   if (typeof NET.pick === 'string') {
     const cid = NET.pick.slice(2), pp = NET.people[cid];
-    if (pp && SEATS[j].kind !== 'local') SEATS[j] = {kind: 'remote', name: pp.name || '玩家', cid, online: true};
+    if (pp && SEATS[j].kind !== 'local') SEATS[j] = {kind: 'remote', name: pp.name || T('player'), cid, online: true};
   } else if (NET.pick !== j) { const t = SEATS[NET.pick]; SEATS[NET.pick] = SEATS[j]; SEATS[j] = t; }
   NET.pick = null;
   ME = SEATS.findIndex(s => s.kind === 'local');
@@ -1369,35 +1506,96 @@ function leaveOnline() {
   loadOffline(); newRound();
 }
 function roomInfo() {
-  const rows = [0, 1, 2, 3].map(p => `<b>座位${p + 1}</b><span>${esc(nameOf(p))}${p === ME ? '（你）' : ''} ${tagOf(p)}</span>`).join('');
-  modal(`<h2>线上房间 ${NET.room}</h2><div class="ord">${rows}</div>
+  const rows = [0, 1, 2, 3].map(p => `<b>${T('seat', p + 1)}</b><span>${esc(nameOf(p))}${p === ME ? ' (' + T('you') + ')' : ''} ${tagOf(p)}</span>`).join('');
+  modal(`<h2>${T('room', NET.room)}</h2><div class="ord">${rows}</div>
     <div class="lk"><input id="lkIn2" readonly value="${esc(shareLink())}"></div>
-    <p class="note">${MODE === 'host' ? '你是房主：牌局在你的设备上运行，请保持页面打开、屏幕常亮。' : '房主的设备负责运行牌局；掉线后会自动重连。'}</p>
-    <div class="row"><button class="bt" id="riLeave">退出房间</button><button class="bt main" id="riOk">好</button></div>`);
+    <p class="note">${MODE === 'host' ? T('hostNote') : T('guestNote')}</p>
+    <div class="row"><button class="bt" id="riLeave">${T('leaveRoom')}</button><button class="bt main" id="riOk">${T('ok')}</button></div>`);
   $('riOk').onclick = closeModal;
   $('riLeave').onclick = leaveOnline;
 }
 function startScreen() {
   const srvSet = !!NET.srv;
-  modal(`<h2>离线掼蛋</h2><p class="note">选择怎么玩</p>
+  modal(`<h2>${T('title')}</h2><p class="note">${T('howPlay')}</p>
     <div class="choice">
-      <button class="bt main" id="ssOff">单机（不用网络）</button>
-      <button class="bt" id="ssOn" ${IN_CLAUDE ? 'disabled' : ''}>线上：创建房间，发链接给朋友</button>
+      <button class="bt main" id="ssOff">${T('solo')}</button>
+      <button class="bt" id="ssOn" ${IN_CLAUDE ? 'disabled' : ''}>${T('onlineBtn')}</button>
     </div>
-    ${IN_CLAUDE ? '<p class="note">线上模式请用 GitHub 上的版本打开。</p>' : `
-    <div class="nmrow"><span>你的名字</span><input id="ssName" maxlength="12" value="${esc(myName)}" placeholder="起个名字"></div>
-    <div class="srv"><span>服务器</span><input id="ssSrv" value="${esc(NET.srv)}" placeholder="xxx.workers.dev"></div>
-    ${srvSet ? '' : '<p class="note">第一次用线上模式，需要填你部署好的 Cloudflare 服务器地址。</p>'}`}`);
+    ${IN_CLAUDE ? `<p class="note">${T('onlineGh')}</p>` : `
+    <div class="nmrow"><span>${T('yourName')}</span><input id="ssName" maxlength="12" value="${esc(myName)}" placeholder="${T('namePh')}"></div>
+    <div class="srv"><span>${T('server')}</span><input id="ssSrv" value="${esc(NET.srv)}" placeholder="xxx.workers.dev"></div>
+    ${srvSet ? '' : `<p class="note">${T('needSrv')}</p>`}`}
+    <div class="row"><button class="bt" id="ssLang">${LANG === 'zh' ? 'English' : '中文'}</button></div>`);
+  $('ssLang').onclick = () => { setLang(LANG === 'zh' ? 'en' : 'zh'); startScreen(); };
   $('ssOff').onclick = () => { closeModal(); clearTimeout(timer); loadOffline(); newRound(); };
   if (!IN_CLAUDE) $('ssOn').onclick = () => {
     myName = $('ssName').value.trim().slice(0, 12); store.set('gd_name', myName);
     const s = $('ssSrv').value.trim().replace(/\/+$/, '');
-    if (!s) { toast('请先填服务器地址'); return; }
+    if (!s) { toast(T('fillSrv')); return; }
     NET.srv = s; store.set('gd_srv', s);
     closeModal(); createRoom();
   };
 }
-
+// ----- 语言 -----
+function setLang(l) {
+  LANG = l; UI.set.lang = l; store.set('gd_set', UI.set);
+  document.documentElement.lang = l === 'zh' ? 'zh-CN' : 'en';
+  document.querySelectorAll('[data-t]').forEach(e => e.textContent = T(e.dataset.t));
+  document.querySelectorAll('[data-tt]').forEach(e => e.title = T(e.dataset.tt));
+  document.title = T('title');
+  if (S.hands) render();
+  renderLobby();
+}
+// ----- 电脑玩家改名 -----
+function renameBot(p) {
+  if (!isBotSeat(p)) return;
+  const cur = MODE === 'offline' ? (BOTNM[p] || '') : SEATS[p].name;
+  modal(`<h2>${T('rename', esc(nameOf(p)))}</h2>
+    <div class="nmrow"><input id="rnIn" maxlength="12" value="${esc(cur)}" placeholder="${esc(MODE === 'offline' ? T('rel')[rel(p)] : '')}"></div>
+    <p class="note">${T('namesNote')}</p>
+    <div class="row"><button class="bt" id="rnNo">${T('cancel')}</button><button class="bt main" id="rnOk">${T('save')}</button></div>`);
+  setTimeout(() => { try { $('rnIn').focus(); $('rnIn').select(); } catch (e) {} }, 50);
+  $('rnNo').onclick = closeModal;
+  $('rnOk').onclick = () => { applyBotName(p, $('rnIn').value.trim().slice(0, 12)); closeModal(); };
+  $('rnIn').onkeydown = e => { if (e.key === 'Enter') $('rnOk').click(); };
+}
+function applyBotName(p, name) {
+  if (MODE === 'offline') { BOTNM[p] = name; store.set('gd_botnames', BOTNM); render(); return; }
+  if (MODE === 'guest') { netSend({t: 'botname', seat: p, name}); return; }
+  if (SEATS[p] && SEATS[p].kind === 'bot') { SEATS[p].name = name || T('computer'); render(); }
+}
+// ----- 游戏统计（只增不减） -----
+const STATS = Object.assign({rounds: 0, ms: 0, months: {}, people: []}, store.get('gd_stats', {}));
+let statLast = Date.now();
+const monthKey = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'); };
+function playingNow() { return !!(S.hands && S.hands.some(h => h.length) && !S.roundOver && !$('lobby').classList.contains('show') && !$('ssOff')); }
+function statTick() {
+  const now = Date.now(), dt = Math.min(Math.max(0, now - statLast), 30000); statLast = now;
+  if (document.visibilityState !== 'visible' || !playingNow()) return;
+  STATS.ms += dt; const k = monthKey(); STATS.months[k] = (STATS.months[k] || 0) + dt;
+  store.set('gd_stats', STATS);
+}
+setInterval(statTick, 10000);
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') statLast = Date.now(); else statTick(); });
+function statRound() { const k = 'r' + S.round + ':' + (MODE === 'offline' ? 'o' : NET.room); if (STATS.lastR === k) return; STATS.lastR = k; STATS.rounds++; store.set('gd_stats', STATS); }
+function statPeople() {
+  if (!SEATS) return;
+  let ch = false;
+  for (const s of SEATS) if (s && s.cid && s.cid !== NET.cid && (s.kind === 'remote' || s.kind === 'local') && !STATS.people.includes(s.cid)) { STATS.people.push(s.cid); ch = true; }
+  if (ch) store.set('gd_stats', STATS);
+}
+function fmtHM(ms) { const m = Math.floor(ms / 60000); return T('hm', Math.floor(m / 60), m % 60); }
+function showStats() {
+  statTick();
+  modal(`<h2>${T('stats')}</h2><div class="stat">
+    <b>${T('stRounds')}</b><span>${STATS.rounds}</span>
+    <b>${T('stTime')}</b><span>${fmtHM(STATS.ms)}</span>
+    <b>${T('stMonth')}</b><span>${fmtHM(STATS.months[monthKey()] || 0)}</span>
+    <b>${T('stPeople')}</b><span>${STATS.people.length}</span></div>
+    <p class="note">${T('stNote')}</p>
+    <div class="row"><button class="bt main" id="stOk">${T('ok')}</button></div>`);
+  $('stOk').onclick = closeModal;
+}
 // 点选 / 滑动多选 / 双击选整列
 (() => {
   const el = $('hand'); let drag = null, lastTap = {id: -1, t: 0};
@@ -1417,17 +1615,27 @@ function startScreen() {
     lastTap = {id, t: now};
     const on = !UI.sel.has(id);
     on ? UI.sel.add(id) : UI.sel.delete(id);
-    drag = {on, seen: new Set([id])};
+    drag = {on, seen: new Set([id]), x: e.clientX, y: e.clientY};
+    // 按住不动约 0.4 秒：选中这一整列
+    const d0 = drag;
+    d0.hold = setTimeout(() => {
+      if (drag !== d0 || d0.seen.size > 1) return;
+      const col = UI.cols.find(c => c.cards.some(x => x.id === id));
+      if (col) { col.cards.forEach(x => UI.sel.add(x.id)); d0.held = true; renderHand(); if (navigator.vibrate) try { navigator.vibrate(15); } catch (er) {} }
+    }, 420);
     renderHand();
   });
   window.addEventListener('pointermove', e => {
     if (!drag) return;
     const id = idAt(e.clientX, e.clientY);
-    if (id === null || drag.seen.has(id)) return;
+    if (Math.abs(e.clientX - drag.x) + Math.abs(e.clientY - drag.y) > 10) clearTimeout(drag.hold);
+    if (id === null || drag.seen.has(id) || drag.held) return;
     drag.seen.add(id); drag.on ? UI.sel.add(id) : UI.sel.delete(id); renderHand();
   });
-  window.addEventListener('pointerup', () => drag = null);
-  window.addEventListener('pointercancel', () => drag = null);
+  const end = () => { if (drag) clearTimeout(drag.hold); drag = null; };
+  window.addEventListener('pointerup', end);
+  window.addEventListener('pointercancel', end);
+  el.addEventListener('contextmenu', e => e.preventDefault());
 })();
 
 $('bPlay').onclick = onPlay; $('bPass').onclick = onPass; $('bHint').onclick = onHint;
@@ -1442,42 +1650,43 @@ document.addEventListener('keydown', e => {
 });
 $('bSet').onclick = () => {
   const s = UI.set, guest = MODE === 'guest';
-  modal(`<h2>设置</h2>
-  ${guest ? '<p class="note">电脑难度和出牌速度由房主设置。</p>' : `
-  <p>电脑难度</p><div class="seg">${['normal', 'hard', 'master'].map(k => `<button class="bt ${s.diff === k ? 'main' : ''}" data-df="${k}">${DIFFCN[k]}</button>`).join('')}</div>
-  <p style="font-size:12px;color:#555">困难 / 大师：每步先模拟推演几百种可能的牌局再出牌，每步约 1 秒 / 2 秒。</p>
-  <p>出牌速度</p><div class="seg">${['fast', 'mid', 'slow'].map(k => `<button class="bt ${s.speed === k ? 'main' : ''}" data-sp="${k}">${{fast: '快', mid: '中', slow: '慢'}[k]}</button>`).join('')}</div>`}
-  <label><input type="checkbox" id="oAuto" ${s.autoPass ? 'checked' : ''}> 要不起时自动跳过</label>
-  <label><input type="checkbox" id="oSort" ${s.autoSort ? 'checked' : ''}> 每局发牌后自动智能理牌</label>
-  ${IN_CLAUDE ? '' : `<div class="srv"><span>联机服务器</span><input id="oSrv" value="${esc(NET.srv)}" placeholder="xxx.workers.dev"></div>`}
-  <div class="row">${MODE === 'offline' ? '<button class="bt" id="mMode">单机 / 线上</button>' : '<button class="bt" id="mLeave">退出房间</button>'}${guest ? '' : '<button class="bt" id="mRestart">重新开始整场</button>'}<button class="bt main" id="mOk">好</button></div>`);
+  const bots = [0, 1, 2, 3].filter(isBotSeat);
+  modal(`<h2>${T('settings')}</h2>
+  <p>${T('setLang')}</p><div class="seg"><button class="bt ${LANG === 'zh' ? 'main' : ''}" data-lg="zh">中文</button><button class="bt ${LANG === 'en' ? 'main' : ''}" data-lg="en">English</button></div>
+  ${guest ? `<p class="note">${T('setCpuHost')}</p>` : `
+  <p>${T('setDiff')}</p><div class="seg">${['normal', 'hard', 'master'].map(k => `<button class="bt ${s.diff === k ? 'main' : ''}" data-df="${k}">${DIFFCN[k]}</button>`).join('')}</div>
+  <p style="font-size:12px;color:#555">${T('setDiffNote')}</p>
+  <p>${T('setSpeed')}</p><div class="seg">${['fast', 'mid', 'slow', 'slower'].map(k => `<button class="bt ${s.speed === k ? 'main' : ''}" data-sp="${k}">${T('speed')[k]}</button>`).join('')}</div>`}
+  <label><input type="checkbox" id="oAuto" ${s.autoPass ? 'checked' : ''}> ${T('setAuto')}</label>
+  <label><input type="checkbox" id="oSort" ${s.autoSort ? 'checked' : ''}> ${T('setSort')}</label>
+  ${bots.length && S.hands && (MODE === 'offline' || NET.started) ? `<p>${T('names')}</p><div class="chips">${bots.map(p => `<span class="chip" data-rn="${p}">${esc(nameOf(p))} ✎</span>`).join('')}</div>` : ''}
+  ${IN_CLAUDE ? '' : `<div class="srv"><span>${T('setSrv')}</span><input id="oSrv" value="${esc(NET.srv)}" placeholder="xxx.workers.dev"><button class="bt" id="oTest">${T('test')}</button></div>`}
+  <div class="row"><button class="bt" id="mStats">${T('stats')}</button>${MODE === 'offline' ? `<button class="bt" id="mMode">${T('modeBtn')}</button>` : `<button class="bt" id="mLeave">${T('leaveRoom')}</button>`}${guest ? '' : `<button class="bt" id="mRestart">${T('restart')}</button>`}<button class="bt main" id="mOk">${T('ok')}</button></div>`);
+  document.querySelectorAll('[data-lg]').forEach(b => b.onclick = () => { setLang(b.dataset.lg); $('bSet').onclick(); });
   document.querySelectorAll('[data-df]').forEach(b => b.onclick = () => { s.diff = b.dataset.df; document.querySelectorAll('[data-df]').forEach(x => x.classList.toggle('main', x === b)); });
   document.querySelectorAll('[data-sp]').forEach(b => b.onclick = () => { s.speed = b.dataset.sp; document.querySelectorAll('[data-sp]').forEach(x => x.classList.toggle('main', x === b)); });
+  document.querySelectorAll('[data-rn]').forEach(b => b.onclick = () => renameBot(+b.dataset.rn));
   $('mOk').onclick = () => {
     s.autoPass = $('oAuto').checked; s.autoSort = $('oSort').checked; store.set('gd_set', s);
     if ($('oSrv')) { const v = $('oSrv').value.trim().replace(/\/+$/, ''); if (v && MODE === 'offline') { NET.srv = v; store.set('gd_srv', v); } }
     closeModal(); render(); if (MODE !== 'guest' && S.turn === ME) tick();
   };
+  $('mStats').onclick = showStats;
+  if ($('oTest')) $('oTest').onclick = () => { const v = $('oSrv').value.trim(); if (v) NET.srv = v; testServer(false); };
   if ($('mMode')) $('mMode').onclick = () => { clearTimeout(timer); startScreen(); };
   if ($('mLeave')) $('mLeave').onclick = leaveOnline;
   if ($('mRestart')) $('mRestart').onclick = () => {
-    $('mbox').innerHTML = `<h2>重新开始？</h2><p>两边级数都回到 2。</p><div class="row"><button class="bt" id="mNo">取消</button><button class="bt main" id="mYes">重新开始</button></div>`;
+    $('mbox').innerHTML = `<h2>${T('restartQ')}</h2><p>${T('restartNote')}</p><div class="row"><button class="bt" id="mNo">${T('cancel')}</button><button class="bt main" id="mYes">${T('restart')}</button></div>`;
     $('mNo').onclick = closeModal;
     $('mYes').onclick = () => { closeModal(); clearTimeout(timer); S = newGameState(); saveGame(); newRound(); };
   };
 };
-$('bHelp').onclick = () => modal(`<h2>规则与操作</h2>
-<p><b>牌型</b>：单张、对子、三张、三带二、顺子（5张）、三连对、钢板（两个连续三张）。同牌型比大小。</p>
-<p><b>炸弹</b>从小到大：4张 &lt; 5张 &lt; 同花顺 &lt; 6张 &lt; 7张 &lt; 8张… &lt; 天王炸（4张王）。</p>
-<p><b>级牌</b>：本局打几，几就是仅次于王的大牌；<b>红桃级牌是配牌</b>（标“配”），可以当任何非王牌用。</p>
-<p><b>升级</b>：头游一方升级——对家二游升3级，三游升2级，末游升1级。打 A 时须头游且对家不是末游才算赢。</p>
-<p><b>进贡</b>：末游把最大的牌（不含红桃配）进贡给头游，头游还一张10或以下的牌；双下时两人都进贡。进贡方手里有两张大王可以抗贡。</p>
-<p><b>操作</b>：点牌选中，手指滑过可连选，<b>双击</b>某张牌选中整列。「同花顺」依次帮你挑出能组的同花顺，再点「理牌」放成一列；「智能理牌」按电脑的最优拆法自动分好列。</p>
-<p><b>线上</b>：设置里选「单机 / 线上」创建房间，把链接发给朋友。房主可以给大家换座位，点开始后空位由电脑补上。</p>
-<p>电脑键盘：回车出牌，空格不出，H 提示，S 智能理牌。</p>
-<div class="row"><button class="bt main" id="mOk">知道了</button></div>`) || ($('mOk').onclick = closeModal);
+$('bHelp').onclick = () => { modal(T('helpHtml') + `<div class="row"><button class="bt main" id="mOk">${T('ok')}</button></div>`); $('mOk').onclick = closeModal; };
+// 点牌桌上电脑玩家的名字可以改名
+['i1', 'i2', 'i3', 'i0'].forEach(id => $(id).addEventListener('click', () => { const p = +$(id).dataset.seat; if (isBotSeat(p)) renameBot(p); }));
 addEventListener('resize', () => { sizeVars(); render(); renderLobby(); });
 sizeVars();
+setLang(LANG);
 
 // ---------- 启动 ----------
 (() => {

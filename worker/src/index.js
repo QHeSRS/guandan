@@ -9,6 +9,8 @@ export default {
       if (request.headers.get("Upgrade") !== "websocket") return new Response("需要 WebSocket", { status: 426 });
       return env.ROOMS.get(env.ROOMS.idFromName(m[1])).fetch(request);
     }
+    if (url.pathname === "/relay") return new Response("guandan relay ok", { headers: { "content-type": "text/plain; charset=utf-8", "access-control-allow-origin": "*" } });
+    if (env.ASSETS) return env.ASSETS.fetch(request);   // 同一个地址顺便提供游戏网页
     return new Response("guandan relay ok", { headers: { "content-type": "text/plain; charset=utf-8", "access-control-allow-origin": "*" } });
   },
 };
