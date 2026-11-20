@@ -79,6 +79,37 @@ html,body{margin:0;height:100%;overflow:hidden;background:#06261a;font:15px/1.4 
 .note{font-size:12px;color:#6b6352}
 .choice{display:grid;gap:10px;margin-top:12px}
 .choice .bt{min-height:52px;font-size:17px}
+
+#bPass,#bPlay{font-size:calc(15px*var(--bs,1));min-height:calc(38px*var(--bs,1));min-width:calc(58px*var(--bs,1));border-radius:calc(19px*var(--bs,1))}
+.mhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}.mhead h2{margin:0}
+/* 大屏（iPad / Mac）：字更大；「不出」「出牌」放在“我”正下方的中间，又大又醒目；「提示」放另一侧 */
+#ctrl .grp.side{margin-left:auto}
+  body.big{font-size:17px}
+  body.big .lv{font-size:16px}body.big .lv b{font-size:19px;padding:2px 10px}
+  body.big .tb{font-size:16px;padding:7px 14px}
+  body.big #net{font-size:14px}
+  body.big .info{padding:7px 12px;min-width:76px}body.big .info .nm{font-size:17px;max-width:150px}body.big .info .cnt{font-size:16px}
+  body.big .back{width:20px;height:28px}
+  body.big .rk{font-size:13px}body.big .tag{font-size:12px}
+  body.big .pass{font-size:22px}
+  body.big .ptype{font-size:13px;top:-18px}
+  body.big #info{font-size:17px}
+  body.big #toast{font-size:20px;padding:10px 24px}
+  body.big #ctrl{display:flex;position:relative;min-height:calc(80px*var(--bs,1));align-items:center;padding:8px 14px}
+  body.big #ctrl .grp.mainbtns{position:absolute;left:max(50%, calc(152px*var(--bs,1) + 9px + 380px));top:50%;transform:translate(-50%,-50%);gap:18px;flex-wrap:nowrap}
+  body.big #ctrl .bt.sm{font-size:18px;min-height:48px;padding:0 18px}
+  body.big #bHint{font-size:19px;min-height:52px;min-width:100px;padding:0 20px;position:fixed;left:calc(14px + env(safe-area-inset-left));bottom:calc(14px + env(safe-area-inset-bottom));z-index:300}
+  body.big #bPass,body.big #bPlay{font-size:calc(26px*var(--bs,1));min-height:calc(61px*var(--bs,1));min-width:calc(152px*var(--bs,1));border-radius:calc(30px*var(--bs,1));padding:0 28px;box-shadow:0 4px 0 rgba(0,0,0,.35)}
+  body.big .box h2{font-size:26px}body.big .box p,body.big .box li{font-size:16px}body.big .box label{font-size:17px}
+@media (max-width:899px){
+  body.big #ctrl #bPass,body.big #ctrl #bPlay{min-width:calc(120px*var(--bs,1));padding:0 16px}
+  body.big #ctrl .grp.mainbtns{left:max(50%, calc(120px*var(--bs,1) + 9px + 250px)) !important}
+}
+@media (max-width:1299px){
+  body.big #ctrl .grp.mainbtns{left:max(50%, calc(152px*var(--bs,1) + 9px + 250px))}
+  body.big #ctrl .grp:first-child{display:grid;grid-template-columns:auto auto;gap:6px}
+  body.big #ctrl .bt.sm{min-height:40px;font-size:16px;padding:0 12px}
+}
 #ctrl{display:flex;justify-content:space-between;gap:6px;padding:4px 8px;flex:none;flex-wrap:wrap}
 #ctrl .grp{display:flex;gap:6px;flex-wrap:wrap}
 .bt{min-height:38px;min-width:58px;padding:0 12px;border-radius:19px;border:none;font-size:15px;font-weight:700;cursor:pointer;background:#f3efe2;color:var(--ink);box-shadow:0 2px 0 rgba(0,0,0,.35)}
@@ -159,9 +190,9 @@ html,body{margin:0;height:100%;overflow:hidden;background:#06261a;font:15px/1.4 
       <button class="bt sm" id="bGroup" data-t="group" data-tt="groupTip">理牌</button>
       <button class="bt sm" id="bReset" data-t="reset" data-tt="resetTip">还原</button>
     </div>
-    <div class="grp">
+    <div class="grp side"><button class="bt" id="bHint" data-t="hint">提示</button></div>
+    <div class="grp mainbtns">
       <button class="bt pa" id="bPass" data-t="pass">不出</button>
-      <button class="bt" id="bHint" data-t="hint">提示</button>
       <button class="bt main" id="bPlay">出牌</button>
     </div>
   </div>
@@ -779,7 +810,7 @@ const L10N = {
     title: '离线掼蛋', howPlay: '选择怎么玩', solo: '单机（不用网络）', onlineBtn: '线上：创建房间，发链接给朋友', onlineGh: '线上模式请用 GitHub 上的版本打开。',
     server: '服务器', needSrv: '第一次用线上模式，需要填你部署好的 Cloudflare 服务器地址。', fillSrv: '请先填服务器地址',
     setCpuHost: '电脑难度和出牌速度由房主设置。', setDiff: '电脑难度', setDiffNote: '困难 / 大师：每步先模拟推演几百种可能的牌局再出牌，每步约 1 秒 / 2 秒。',
-    setSpeed: '出牌速度', setAuto: '要不起时自动跳过', setSort: '每局发牌后自动智能理牌', setSrv: '联机服务器', test: '测试', setLang: '语言 Language',
+    setSpeed: '出牌速度', setAuto: '要不起时自动跳过', setSort: '每局发牌后自动智能理牌', setSrv: '联机服务器', test: '测试', setLang: '语言 Language', setBtn: '「不出」「出牌」按键大小', setLayout: '界面布局', layout: {auto: '自动', big: '大屏（iPad / 电脑）', small: '手机'}, verLine: (v, wh, l) => `版本 ${v} · 窗口 ${wh} · 当前：${l}`, btn: {normal: '标准', large: '大', xl: '特大'},
     modeBtn: '单机 / 线上', restart: '重新开始整场', restartQ: '重新开始？', restartNote: '两边级数都回到 2。', cancel: '取消',
     names: '电脑玩家改名', namesNote: '改名随时生效。清空就恢复默认名字。', save: '保存', rename: n => `给「${n}」改名`,
     stats: '游戏统计', stRounds: '累计游戏局数', stTime: '累计游戏时间', stMonth: '本月游戏时间', stPeople: '线上一起玩过的人数',
@@ -828,7 +859,7 @@ const L10N = {
     title: 'Guandan', howPlay: 'How do you want to play?', solo: 'Solo (no internet needed)', onlineBtn: 'Online: create a room and share the link', onlineGh: 'For online play, open the GitHub version.',
     server: 'Server', needSrv: 'First time online: enter your Cloudflare server address.', fillSrv: 'Enter the server address first',
     setCpuHost: 'CPU level and speed are set by the host.', setDiff: 'CPU level', setDiffNote: 'Hard / Master: simulates hundreds of possible deals before each move, about 1 s / 2 s per move.',
-    setSpeed: 'Play speed', setAuto: 'Auto-pass when I can\'t beat', setSort: 'Smart sort after each deal', setSrv: 'Server', test: 'Test', setLang: '语言 Language',
+    setSpeed: 'Play speed', setAuto: 'Auto-pass when I can\'t beat', setSort: 'Smart sort after each deal', setSrv: 'Server', test: 'Test', setLang: '语言 Language', setBtn: 'Pass / Play button size', setLayout: 'Layout', layout: {auto: 'Auto', big: 'Large (iPad / computer)', small: 'Phone'}, verLine: (v, wh, l) => `Version ${v} · window ${wh} · now: ${l}`, btn: {normal: 'Standard', large: 'Large', xl: 'Extra large'},
     modeBtn: 'Solo / Online', restart: 'Restart game', restartQ: 'Restart?', restartNote: 'Both teams go back to level 2.', cancel: 'Cancel',
     names: 'Rename CPU players', namesNote: 'Changes apply right away. Leave empty for the default name.', save: 'Save', rename: n => `Rename "${n}"`,
     stats: 'Stats', stRounds: 'Rounds played', stTime: 'Total play time', stMonth: 'This month', stPeople: 'People played with online',
@@ -850,8 +881,9 @@ const L10N = {
 <script>
 {
 const $ = id => document.getElementById(id);
+const APPVER = '2026-11-20 v8';
 const BUDGET = {normal: 0, hard: 900, master: 2000};
-let LANG = (() => { try { const v = JSON.parse(localStorage.getItem('gd_set') || '{}').lang; if (v) return v; } catch (e) {} return /^zh/i.test(navigator.language || 'zh') ? 'zh' : 'en'; })();
+let LANG = (() => { try { const v = JSON.parse(localStorage.getItem('gd_set') || '{}').lang; if (v) return v; } catch (e) {} return 'zh'; })();   // 默认中文，用户在设置里改过才用英文
 const T = (k, ...a) => { const v = (L10N[LANG] && L10N[LANG][k] !== undefined) ? L10N[LANG][k] : L10N.zh[k]; return typeof v === 'function' ? v(...a) : (v === undefined ? k : v); };
 const RANKCN = new Proxy([], {get: (t, i) => T('ranks')[i]});
 const DIFFCN = new Proxy({}, {get: (t, k) => T('diff')[k]});
@@ -860,7 +892,7 @@ const BOTNAMES = {zh: ['小明', '阿强', '老王', '小芳', '大刘', '阿珍
 const DEFAULT_SRV = /\.workers\.dev$/.test(location.host) ? location.host : 'guandan.heqr1.workers.dev';   // 你的 Cloudflare 服务器
 const store = {get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }};
 const UI = {sel: new Set(), groups: [], hints: null, hi: -1, sfs: null, sfi: -1, phase: 'play',
-  reqId: 0, thinking: -1, set: Object.assign({diff: 'normal', speed: 'fast', autoPass: true, autoSort: true, tracker: false}, store.get('gd_set', {}))};
+  reqId: 0, thinking: -1, set: Object.assign({layout: 'auto', btnSize: 'normal', diff: 'normal', speed: 'fast', autoPass: true, autoSort: true, tracker: false}, store.get('gd_set', {}))};
 UI.set.lang = LANG;
 let BOTNM = store.get('gd_botnames', ['', '', '', '']);   // 单机时电脑玩家的自定义名字
 const IN_CLAUDE = /claude/.test(location.host);
@@ -925,22 +957,26 @@ function columns() {
 }
 function sizeVars() {
   const W = innerWidth, H = innerHeight;
-  const cw = Math.round(Math.max(40, Math.min(66, W / 10.5, H * 0.115)));
+  const lay = UI.set.layout || 'auto';
+  const big = lay === 'big' ? true : lay === 'small' ? false : (W >= 680 && H >= 460);
+  document.body.classList.toggle('big', big);
+  const cw = Math.round(Math.max(40, Math.min(big ? 80 : 66, W / 10.5, H * (big ? 0.11 : 0.115))));
   const sw = Math.round(cw * 0.62);
   const r = document.documentElement.style;
   r.setProperty('--cw', cw + 'px'); r.setProperty('--ch', Math.round(cw * 1.4) + 'px');
   r.setProperty('--sw', sw + 'px'); r.setProperty('--sh', Math.round(sw * 1.4) + 'px');
-  UI.cw = cw; UI.sw = sw;
+  UI.cw = cw; UI.sw = sw; UI.big = big;
 }
 function renderHand() {
   const el = $('hand'), cols = columns(), cw = UI.cw, ch = Math.round(cw * 1.4);
   const maxN0 = Math.max(1, ...cols.map(c => c.cards.length));
-  const W = el.clientWidth || innerWidth, n = cols.length;
+  const gut = UI.big ? 130 : 0;   // 大屏左下角留给「提示」按钮
+  const W = (el.clientWidth || innerWidth) - gut, n = cols.length;
   const spx = n > 1 ? Math.min(cw + 4, (W - cw - 12) / (n - 1)) : 0;
   // 列之间够宽：点数和花色横排，每张露一行即可；太挤：竖排，每张多露一点，保证花色看得见
   const horiz = n <= 1 || spx >= cw * 0.82;
   const vo = Math.round(horiz ? cw * 0.4 : cw * 0.7);
-  const x0 = (W - (spx * (n - 1) + cw)) / 2;
+  const x0 = gut + (W - (spx * (n - 1) + cw)) / 2;
   el.style.height = (ch + (maxN0 - 1) * vo + 14) + 'px';
   const ret = UI.phase === 'return';
   let h = '';
@@ -1537,6 +1573,8 @@ function startScreen() {
   };
 }
 // ----- 语言 -----
+const BTNSCALE = {normal: 1, large: 1.25, xl: 1.5};
+function applyBtnSize() { document.documentElement.style.setProperty('--bs', BTNSCALE[UI.set.btnSize] || 1); }
 function setLang(l) {
   LANG = l; UI.set.lang = l; store.set('gd_set', UI.set);
   document.documentElement.lang = l === 'zh' ? 'zh-CN' : 'en';
@@ -1651,26 +1689,32 @@ document.addEventListener('keydown', e => {
 $('bSet').onclick = () => {
   const s = UI.set, guest = MODE === 'guest';
   const bots = [0, 1, 2, 3].filter(isBotSeat);
-  modal(`<h2>${T('settings')}</h2>
+  modal(`<div class="mhead"><h2>${T('settings')}</h2><button class="bt main" id="mOk2">${T('ok')}</button></div>
   <p>${T('setLang')}</p><div class="seg"><button class="bt ${LANG === 'zh' ? 'main' : ''}" data-lg="zh">中文</button><button class="bt ${LANG === 'en' ? 'main' : ''}" data-lg="en">English</button></div>
   ${guest ? `<p class="note">${T('setCpuHost')}</p>` : `
   <p>${T('setDiff')}</p><div class="seg">${['normal', 'hard', 'master'].map(k => `<button class="bt ${s.diff === k ? 'main' : ''}" data-df="${k}">${DIFFCN[k]}</button>`).join('')}</div>
   <p style="font-size:12px;color:#555">${T('setDiffNote')}</p>
   <p>${T('setSpeed')}</p><div class="seg">${['fast', 'mid', 'slow', 'slower'].map(k => `<button class="bt ${s.speed === k ? 'main' : ''}" data-sp="${k}">${T('speed')[k]}</button>`).join('')}</div>`}
+  <p>${T('setLayout')}</p><div class="seg">${['auto', 'big', 'small'].map(k => `<button class="bt ${(s.layout || 'auto') === k ? 'main' : ''}" data-ly="${k}">${T('layout')[k]}</button>`).join('')}</div>
+  <p>${T('setBtn')}</p><div class="seg">${['normal', 'large', 'xl'].map(k => `<button class="bt ${(s.btnSize || 'normal') === k ? 'main' : ''}" data-bs="${k}">${T('btn')[k]}</button>`).join('')}</div>
   <label><input type="checkbox" id="oAuto" ${s.autoPass ? 'checked' : ''}> ${T('setAuto')}</label>
   <label><input type="checkbox" id="oSort" ${s.autoSort ? 'checked' : ''}> ${T('setSort')}</label>
   ${bots.length && S.hands && (MODE === 'offline' || NET.started) ? `<p>${T('names')}</p><div class="chips">${bots.map(p => `<span class="chip" data-rn="${p}">${esc(nameOf(p))} ✎</span>`).join('')}</div>` : ''}
   ${IN_CLAUDE ? '' : `<div class="srv"><span>${T('setSrv')}</span><input id="oSrv" value="${esc(NET.srv)}" placeholder="xxx.workers.dev"><button class="bt" id="oTest">${T('test')}</button></div>`}
+  <p class="note">${T('verLine', APPVER, innerWidth + '×' + innerHeight, document.body.classList.contains('big') ? T('layout').big : T('layout').small)}</p>
   <div class="row"><button class="bt" id="mStats">${T('stats')}</button>${MODE === 'offline' ? `<button class="bt" id="mMode">${T('modeBtn')}</button>` : `<button class="bt" id="mLeave">${T('leaveRoom')}</button>`}${guest ? '' : `<button class="bt" id="mRestart">${T('restart')}</button>`}<button class="bt main" id="mOk">${T('ok')}</button></div>`);
   document.querySelectorAll('[data-lg]').forEach(b => b.onclick = () => { setLang(b.dataset.lg); $('bSet').onclick(); });
   document.querySelectorAll('[data-df]').forEach(b => b.onclick = () => { s.diff = b.dataset.df; document.querySelectorAll('[data-df]').forEach(x => x.classList.toggle('main', x === b)); });
   document.querySelectorAll('[data-sp]').forEach(b => b.onclick = () => { s.speed = b.dataset.sp; document.querySelectorAll('[data-sp]').forEach(x => x.classList.toggle('main', x === b)); });
+  document.querySelectorAll('[data-ly]').forEach(b => b.onclick = () => { s.layout = b.dataset.ly; store.set('gd_set', s); sizeVars(); render(); document.querySelectorAll('[data-ly]').forEach(x => x.classList.toggle('main', x === b)); });
+  document.querySelectorAll('[data-bs]').forEach(b => b.onclick = () => { s.btnSize = b.dataset.bs; store.set('gd_set', s); applyBtnSize(); render(); document.querySelectorAll('[data-bs]').forEach(x => x.classList.toggle('main', x === b)); });
   document.querySelectorAll('[data-rn]').forEach(b => b.onclick = () => renameBot(+b.dataset.rn));
   $('mOk').onclick = () => {
     s.autoPass = $('oAuto').checked; s.autoSort = $('oSort').checked; store.set('gd_set', s);
     if ($('oSrv')) { const v = $('oSrv').value.trim().replace(/\/+$/, ''); if (v && MODE === 'offline') { NET.srv = v; store.set('gd_srv', v); } }
     closeModal(); render(); if (MODE !== 'guest' && S.turn === ME) tick();
   };
+  $('mOk2').onclick = () => $('mOk').click();
   $('mStats').onclick = showStats;
   if ($('oTest')) $('oTest').onclick = () => { const v = $('oSrv').value.trim(); if (v) NET.srv = v; testServer(false); };
   if ($('mMode')) $('mMode').onclick = () => { clearTimeout(timer); startScreen(); };
@@ -1686,6 +1730,7 @@ $('bHelp').onclick = () => { modal(T('helpHtml') + `<div class="row"><button cla
 ['i1', 'i2', 'i3', 'i0'].forEach(id => $(id).addEventListener('click', () => { const p = +$(id).dataset.seat; if (isBotSeat(p)) renameBot(p); }));
 addEventListener('resize', () => { sizeVars(); render(); renderLobby(); });
 sizeVars();
+applyBtnSize();
 setLang(LANG);
 
 // ---------- 启动 ----------
